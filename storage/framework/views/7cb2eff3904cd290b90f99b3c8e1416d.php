@@ -1,0 +1,1 @@
+<?php /**PATH C:\xampp\htdocs\ageless-admin-panel\resources\views/admin/site_assets/index.blade.php ENDPATH**/ ?>
