@@ -158,7 +158,7 @@
                                 <a href="{{ asset('storage/'.$item->image) }}" target="_blank">
                                     <img
                                         src="{{ asset('storage/'.$item->image) }}"
-                                        alt="{{ $item->item_name }}"
+                                        alt="<a href="{{ route('admin.inventory-items.show', $item) }}" style="color:inherit;text-decoration:none;font-weight:700">{{ $item->item_name }}</a>"
                                         class="item-photo"
                                     >
                                 </a>
@@ -170,7 +170,7 @@
                         </td>
 
                         <td>
-                            <strong>{{ $item->item_name }}</strong>
+                            <strong><a href="{{ route('admin.inventory-items.show', $item) }}" style="color:inherit;text-decoration:none;font-weight:700">{{ $item->item_name }}</a></strong>
 
                             <div class="small-muted">
                                 {{ $item->item_code }}

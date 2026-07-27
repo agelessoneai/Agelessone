@@ -286,7 +286,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
     <div class="quick-grid">
         <div class="quick-card"><div class="icon">👤</div><h4>My Profile</h4><p>View account details</p></div>
         <div class="quick-card"><div class="icon">🎫</div><h4>My Tickets</h4><p>No open tickets</p></div>
-        <div class="quick-card"><div class="icon">🔔</div><h4>Notifications</h4><p>No new alerts</p></div>
+        <a href="{{ route('expenses.my') }}" class="quick-card" style="text-decoration:none;color:inherit"><div class="icon">🧾</div><h4>My Expenses</h4><p>Add bills and expenses</p></a>
         <div class="quick-card"><div class="icon">✅</div><h4>Status</h4><p>Account active</p></div>
     </div>
 
@@ -299,8 +299,8 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
        class="{{ request()->routeIs('staff.tickets') ? 'active' : '' }}">
         <i>🎫</i>My Tickets
     </a>
+    <a href="{{ route('expenses.my') }}" class="{{ request()->routeIs('expenses.*') ? 'active' : '' }}"><i>🧾</i>Expenses</a>
     <a href="#"><i>👤</i>Profile</a>
-    <a href="#"><i>⚙</i>Settings</a>
 </div>
 
 <script>

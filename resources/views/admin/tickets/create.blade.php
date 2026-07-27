@@ -1,5 +1,4 @@
-@extends('layouts.app')
-
+@extends('layouts.admin')
 @section('content')
 
 <style>
@@ -36,6 +35,16 @@ label{margin-bottom:7px;color:#8794ac}
         <a href="{{ route('admin.tickets') }}" class="btn-back">Back</a>
     </div>
 
+    @if($errors->any())
+        <div class="alert alert-danger mb-4">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form method="POST" action="{{ route('admin.tickets.store') }}">
         @csrf
 
@@ -44,7 +53,7 @@ label{margin-bottom:7px;color:#8794ac}
             <select name="park_id" class="form-select" required>
                 <option value="">Select Park</option>
                 @foreach($parks as $park)
-                    <option value="{{ $park->id }}">{{ $park->name }}</option>
+                    <option value="{{ $park->id }}" @selected(old('park_id') == $park->id)>{{ $park->name }}</option>
                 @endforeach
             </select>
         </div>
@@ -53,34 +62,38 @@ label{margin-bottom:7px;color:#8794ac}
             <label>Assign Staff</label>
             <select name="assigned_to" class="form-select" required>
                 <option value="">Select Staff</option>
-                @foreach($staff as $person)
-                    <option value="{{ $person->id }}">{{ $person->name }} - {{ $person->email }}</option>
-                @endforeach
+                @forelse($staff as $person)
+                    <option value="{{ $person->id }}" @selected(old('assigned_to') == $person->id)>
+                        {{ $person->name }} - {{ $person->email }} ({{ \App\Models\User::roles()[$person->role] ?? ucfirst(str_replace('_', ' ', $person->role)) }})
+                    </option>
+                @empty
+                    <option value="" disabled>No active staff found</option>
+                @endforelse
             </select>
         </div>
 
         <div class="mb-3">
             <label>Item / Ride Name</label>
-            <input type="text" name="item_name" class="form-control" placeholder="Example: 12D Theater, Toy Car, Train" required>
+            <input type="text" name="item_name" class="form-control" value="{{ old('item_name') }}" placeholder="Example: 12D Theater, Toy Car, Train" required>
         </div>
 
         <div class="mb-3">
             <label>Complaint Title</label>
-            <input type="text" name="complaint_title" class="form-control" placeholder="Example: Motion seat not working" required>
+            <input type="text" name="complaint_title" class="form-control" value="{{ old('complaint_title') }}" placeholder="Example: Motion seat not working" required>
         </div>
 
         <div class="mb-3">
             <label>Complaint Details</label>
-            <textarea name="complaint_description" class="form-control" rows="4" placeholder="Describe the complaint"></textarea>
+            <textarea name="complaint_description" class="form-control" rows="4" placeholder="Describe the complaint">{{ old('complaint_description') }}</textarea>
         </div>
 
         <div class="mb-4">
             <label>Priority</label>
             <select name="priority" class="form-select" required>
-                <option value="low">Low</option>
-                <option value="normal" selected>Normal</option>
-                <option value="high">High</option>
-                <option value="urgent">Urgent</option>
+                <option value="low" @selected(old('priority') === 'low')>Low</option>
+                <option value="normal" @selected(old('priority', 'normal') === 'normal')>Normal</option>
+                <option value="high" @selected(old('priority') === 'high')>High</option>
+                <option value="urgent" @selected(old('priority') === 'urgent')>Urgent</option>
             </select>
         </div>
 

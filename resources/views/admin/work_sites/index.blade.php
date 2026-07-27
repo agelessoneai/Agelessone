@@ -4,38 +4,70 @@
 
 @section('content')
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="page-header">
     <div>
         <h2>Site Management</h2>
-        <p class="muted mb-0">Manage work sites, supervisors, security and project teams</p>
+        <p>Manage work sites, supervisors, security and project teams.</p>
     </div>
 
-    <a href="{{ route('admin.work-sites.create') }}" class="btn-blue">
+    <a href="{{ route('admin.work-sites.create') }}" class="btn-add">
         + Add Work Site
     </a>
 </div>
 
 @if(session('success'))
-    <div class="alert alert-success">
+    <div class="alert-success">
         {{ session('success') }}
     </div>
 @endif
+
+<div class="summary-grid">
+
+    <div class="summary-card">
+        <span>Total Sites</span>
+        <strong>{{ $sites->total() }}</strong>
+    </div>
+
+    <div class="summary-card">
+        <span>Active</span>
+        <strong>{{ $sites->where('status', 'active')->count() }}</strong>
+    </div>
+
+    <div class="summary-card">
+        <span>Planning</span>
+        <strong>{{ $sites->where('status', 'planning')->count() }}</strong>
+    </div>
+
+    <div class="summary-card">
+        <span>Completed</span>
+        <strong>{{ $sites->where('status', 'completed')->count() }}</strong>
+    </div>
+
+</div>
 
 <div class="site-grid">
 
     @forelse($sites as $site)
 
-        <div class="site-card">
+        <div class="site-card" role="link" tabindex="0"
+             onclick="if (!event.target.closest('a,button,form,input,select,textarea,label')) window.location='{{ route('admin.work-sites.show', $site) }}'"
+             onkeydown="if ((event.key === 'Enter' || event.key === ' ') && !event.target.closest('a,button,form,input,select,textarea,label')) { event.preventDefault(); window.location='{{ route('admin.work-sites.show', $site) }}'; }">
 
             <div class="site-card-top">
-                <div>
-                    <h3>{{ $site->site_name }}</h3>
-                    <p>{{ $site->client_name ?? 'No client added' }}</p>
+
+                <div class="site-heading">
+                    <div class="site-icon">🏗️</div>
+
+                    <div>
+                        <h3>{{ $site->site_name }}</h3>
+                        <p>{{ $site->client_name ?? 'No client added' }}</p>
+                    </div>
                 </div>
 
                 <span class="site-status status-{{ $site->status }}">
                     {{ ucfirst(str_replace('_', ' ', $site->status)) }}
                 </span>
+
             </div>
 
             <div class="site-location">
@@ -86,24 +118,35 @@
 
             @if($site->description)
                 <div class="site-description">
-                    {{ $site->description }}
+                    {{ \Illuminate\Support\Str::limit($site->description, 100) }}
                 </div>
             @endif
 
             <div class="site-actions">
 
-                <a href="{{ route('admin.work-sites.edit', $site->id) }}"
-                   class="btn-blue">
+                <a
+                    href="{{ route('admin.work-sites.show', $site) }}"
+                    class="small-button view-button"
+                >
+                    👁 View Site
+                </a>
+
+                <a
+                    href="{{ route('admin.work-sites.edit', $site->id) }}"
+                    class="small-button edit-button"
+                >
                     ✏ Edit
                 </a>
 
-                <form method="POST"
-                      action="{{ route('admin.work-sites.destroy', $site->id) }}"
-                      onsubmit="return confirm('Delete this work site?')">
+                <form
+                    method="POST"
+                    action="{{ route('admin.work-sites.destroy', $site->id) }}"
+                    onsubmit="return confirm('Delete this work site?')"
+                >
                     @csrf
                     @method('DELETE')
 
-                    <button type="submit" class="btn-red">
+                    <button type="submit" class="small-button delete-button">
                         🗑 Delete
                     </button>
                 </form>
@@ -114,12 +157,12 @@
 
     @empty
 
-        <div class="card-dark empty-state">
+        <div class="empty-state">
             <div class="empty-icon">🏗️</div>
             <h3>No Work Sites Yet</h3>
-            <p class="muted">Create your first project work site.</p>
+            <p>Create your first project work site.</p>
 
-            <a href="{{ route('admin.work-sites.create') }}" class="btn-blue">
+            <a href="{{ route('admin.work-sites.create') }}" class="btn-add">
                 + Add Work Site
             </a>
         </div>
@@ -128,27 +171,108 @@
 
 </div>
 
-<div class="mt-4">
+<div class="pagination-wrap">
     {{ $sites->links() }}
 </div>
 
 <style>
+.page-header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:18px;
+    margin-bottom:16px;
+}
+
+.page-header h2{
+    margin:0;
+    color:#fff;
+    font-size:23px;
+    line-height:1.2;
+}
+
+.page-header p{
+    margin:5px 0 0;
+    color:#8794ac;
+    font-size:13px;
+}
+
+.btn-add{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:38px;
+    padding:8px 14px;
+    border-radius:9px;
+    color:#fff;
+    background:#3f6fe0;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.alert-success{
+    margin-bottom:16px;
+    padding:11px 14px;
+    border:1px solid rgba(55,194,129,.30);
+    border-radius:10px;
+    color:#9ce8bf;
+    background:rgba(55,194,129,.11);
+    font-size:12px;
+}
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:12px;
+    margin-bottom:16px;
+}
+
+.summary-card{
+    padding:13px 15px;
+    border:1px solid #262f47;
+    border-radius:12px;
+    background:#151b29;
+}
+
+.summary-card span{
+    display:block;
+    color:#8794ac;
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+}
+
+.summary-card strong{
+    display:block;
+    margin-top:5px;
+    color:#fff;
+    font-size:21px;
+}
+
 .site-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(360px,1fr));
-    gap:20px;
+    grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+    gap:15px;
+    align-items:start;
 }
 
 .site-card{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    padding:17px;
+    border:1px solid #29344d;
+    border-radius:15px;
     background:#151b29;
-    border:1px solid #262f47;
-    border-radius:20px;
-    padding:22px;
-    transition:.25s ease;
+    transition:.2s ease;
+    cursor:pointer;
 }
 
 .site-card:hover{
-    transform:translateY(-3px);
+    transform:translateY(-2px);
     border-color:#3f6fe0;
 }
 
@@ -156,113 +280,205 @@
     display:flex;
     align-items:flex-start;
     justify-content:space-between;
-    gap:15px;
+    gap:12px;
+}
+
+.site-heading{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+}
+
+.site-icon{
+    width:38px;
+    height:38px;
+    flex:0 0 38px;
+    display:grid;
+    place-items:center;
+    border-radius:11px;
+    background:linear-gradient(135deg,#3f6fe0,#9b6bff);
+    font-size:18px;
 }
 
 .site-card h3{
     margin:0;
     color:#fff;
-    font-size:20px;
+    font-size:16px;
+    line-height:1.25;
 }
 
 .site-card p{
-    margin:5px 0 0;
+    margin:3px 0 0;
     color:#8794ac;
-    font-size:13px;
+    font-size:11px;
 }
 
 .site-status{
-    padding:7px 12px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:5px 9px;
     border-radius:999px;
-    font-size:11px;
+    font-size:10px;
     font-weight:800;
     white-space:nowrap;
 }
 
 .status-active{
+    color:#5be09f;
     background:rgba(55,194,129,.16);
-    color:#55db9c;
 }
 
 .status-planning{
-    background:rgba(63,111,224,.18);
-    color:#8fb0ff;
+    color:#96b2ff;
+    background:rgba(63,111,224,.17);
 }
 
 .status-on_hold{
-    background:rgba(242,181,59,.18);
-    color:#f2b53b;
+    color:#f2c15a;
+    background:rgba(242,181,59,.16);
 }
 
 .status-completed{
-    background:rgba(155,107,255,.18);
-    color:#b99bff;
+    color:#c2a8ff;
+    background:rgba(155,107,255,.17);
 }
 
 .site-location{
-    margin:18px 0;
-    padding:12px 14px;
-    border-radius:13px;
+    margin:13px 0;
+    padding:10px 12px;
+    border-radius:10px;
+    color:#d1d9e8;
     background:#0e1320;
-    color:#cbd5e1;
-    font-size:13px;
+    font-size:12px;
 }
 
 .site-info-grid{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:12px;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
 }
 
 .site-info{
-    padding:13px;
+    min-width:0;
+    min-height:58px;
+    padding:10px;
+    border-radius:10px;
     background:#1c2436;
-    border-radius:13px;
 }
 
 .site-info span{
     display:block;
-    color:#8794ac;
-    font-size:11px;
     margin-bottom:5px;
+    color:#8794ac;
+    font-size:9px;
     text-transform:uppercase;
+    letter-spacing:.35px;
 }
 
 .site-info strong{
+    display:block;
+    overflow:hidden;
     color:#fff;
-    font-size:14px;
+    font-size:12px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 
 .site-description{
-    margin-top:15px;
-    color:#b7c2d8;
-    font-size:13px;
-    line-height:1.6;
+    margin-top:11px;
+    color:#b9c4d7;
+    font-size:11px;
+    line-height:1.5;
 }
 
 .site-actions{
     display:flex;
     align-items:center;
-    gap:10px;
-    margin-top:20px;
+    gap:8px;
+    margin-top:14px;
 }
 
 .site-actions form{
     margin:0;
 }
 
+.small-button{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:34px;
+    padding:7px 12px;
+    border:0;
+    border-radius:8px;
+    color:#fff;
+    text-decoration:none;
+    font-size:11px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.view-button{
+    background:#24a36a;
+}
+
+.edit-button{
+    background:#3f6fe0;
+}
+
+.delete-button{
+    background:#ff5a6e;
+}
+
 .empty-state{
-    text-align:center;
     grid-column:1/-1;
-    padding:50px;
+    padding:45px 20px;
+    border:1px solid #262f47;
+    border-radius:15px;
+    background:#151b29;
+    text-align:center;
 }
 
 .empty-icon{
-    font-size:48px;
-    margin-bottom:15px;
+    margin-bottom:10px;
+    font-size:42px;
 }
 
-@media(max-width:600px){
+.empty-state h3{
+    margin:0 0 5px;
+    color:#fff;
+}
+
+.empty-state p{
+    margin:0 0 16px;
+    color:#8794ac;
+    font-size:12px;
+}
+
+.pagination-wrap{
+    margin-top:16px;
+}
+
+@media(max-width:1100px){
+    .summary-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+}
+
+@media(max-width:700px){
+    .page-header{
+        flex-direction:column;
+    }
+
+    .page-header .btn-add{
+        width:100%;
+    }
+
+    .summary-grid{
+        grid-template-columns:1fr;
+    }
+
     .site-grid{
         grid-template-columns:1fr;
     }
@@ -273,6 +489,10 @@
 
     .site-card-top{
         flex-direction:column;
+    }
+
+    .site-status{
+        align-self:flex-start;
     }
 }
 </style>

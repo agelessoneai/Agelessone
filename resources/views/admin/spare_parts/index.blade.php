@@ -1,5 +1,4 @@
-@extends('layouts.app')
-
+@extends('layouts.admin')
 @section('content')
 
 <style>
@@ -32,55 +31,7 @@ body{background:#0e1320;color:#e8edf6;overflow:hidden}
 .badge-ok{background:#37c281;color:#062015;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:800}
 </style>
 
-<div class="app">
-
-    <aside class="side">
-        <div class="brand">
-            <div class="logo">A1</div>
-            <div>
-                <h1>Ageless One</h1>
-                <p>AI BUSINESS OS · v1.1</p>
-            </div>
-        </div>
-
-        <div class="nav-title">OVERVIEW</div>
-        <div class="nav">
-            <a href="{{ route('admin.dashboard') }}">🏠 Executive Dashboard</a>
-        </div>
-
-        <div class="nav-title">SERVICE MANAGEMENT</div>
-        <div class="nav">
-            <a href="{{ route('admin.parks') }}">🏢 Parks / Clients</a>
-            <a href="{{ route('admin.tickets') }}">🎫 Complaint Tickets</a>
-            <a class="active" href="{{ route('admin.spare-parts') }}">📦 Spare Parts</a>
-        </div>
-
-        <div class="nav-title">ADMIN</div>
-        <div class="nav">
-            <a href="{{ route('admin.attendance') }}">🕒 Attendance</a>
-            <a href="{{ route('admin.users') }}">👥 Users</a>
-        </div>
-    </aside>
-
-    <main class="main">
-        <div class="top">
-            <input class="search" placeholder="Search spare parts...">
-
-            <div class="user">
-                <div class="avatar">{{ strtoupper(substr(Auth::user()->name,0,1)) }}</div>
-                <div>
-                    <strong>{{ Auth::user()->name }}</strong><br>
-                    <small class="muted">Administrator</small>
-                </div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="logout">Logout</button>
-                </form>
-            </div>
-        </div>
-
-        <div class="content">
-            <div class="card-dark">
+<div class="card-dark">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
                         <h3>Spare Parts Inventory</h3>
@@ -182,8 +133,5 @@ body{background:#0e1320;color:#e8edf6;overflow:hidden}
                 {{ $parts->links() }}
 
             </div>
-        </div>
-    </main>
-</div>
 
 @endsection

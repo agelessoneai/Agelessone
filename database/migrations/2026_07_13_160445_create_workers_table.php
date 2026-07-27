@@ -6,54 +6,37 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
-{
-    Schema::create('workers', function (Blueprint $table) {
+    {
+        Schema::create('workers', function (Blueprint $table) {
+            $table->id();
 
-        $table->id();
+            $table->string('worker_code')->unique();
+            $table->string('name');
+            $table->string('photo')->nullable();
 
-        $table->string('employee_code')->unique();
+            $table->string('mobile')->nullable();
+            $table->string('aadhaar_number')->nullable();
+            $table->string('id_proof')->nullable();
 
-        $table->string('photo')->nullable();
+            $table->string('trade');
+            $table->string('skill_level')->nullable();
+            $table->string('contractor_name')->nullable();
 
-        $table->string('name');
+            $table->decimal('daily_wage', 10, 2)->default(0);
+            $table->decimal('hourly_rate', 10, 2)->default(0);
+            $table->decimal('overtime_rate', 10, 2)->default(0);
 
-        $table->string('mobile')->nullable();
+            $table->string('blood_group')->nullable();
+            $table->string('emergency_contact')->nullable();
+            $table->text('address')->nullable();
 
-        $table->string('aadhaar')->nullable();
+            $table->boolean('active')->default(true);
 
-        $table->date('dob')->nullable();
+            $table->timestamps();
+        });
+    }
 
-        $table->enum('gender',['Male','Female','Other'])->default('Male');
-
-        $table->string('address')->nullable();
-
-        $table->string('trade');
-
-        $table->string('contractor')->nullable();
-
-        $table->decimal('daily_wage',10,2)->default(0);
-
-        $table->decimal('hourly_rate',10,2)->default(0);
-
-        $table->string('blood_group')->nullable();
-
-        $table->string('emergency_contact')->nullable();
-
-        $table->boolean('active')->default(true);
-
-        $table->timestamps();
-
-    });
-}
-    
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('workers');

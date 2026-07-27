@@ -1,5 +1,4 @@
-@extends('layouts.app')
-
+@extends('layouts.admin')
 @section('content')
 
 @php
@@ -37,152 +36,10 @@ h2{font-size:21px;font-weight:700;margin:0}.muted{color:var(--mut)}
 .badge-out{background:rgba(255,90,110,.18);color:var(--crit);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
 .badge-done{background:rgba(91,140,255,.18);color:#8fb0ff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
 .btn-blue{background:linear-gradient(135deg,var(--brand2),#3360c8);color:#fff;padding:9px 16px;border-radius:8px;text-decoration:none;font-weight:600;font-size:13px}
+.btn-ok,.btn-reject{border:0;color:#fff;padding:7px 11px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer}.btn-ok{background:#279b68}.btn-reject{background:#d7475a}.reject-input{min-width:180px;background:var(--bg);border:1px solid var(--line);color:var(--txt);padding:7px 9px;border-radius:7px}.alert-app{margin-top:15px;padding:12px 14px;border-radius:9px}.alert-success-app{background:rgba(55,194,129,.15);color:#75dda9;border:1px solid rgba(55,194,129,.35)}.alert-error-app{background:rgba(255,90,110,.15);color:#ff9aa7;border:1px solid rgba(255,90,110,.35)}.worker-photo{width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}.actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
 </style>
 
-<div class="app">
-
-    <aside class="side">
-        <div class="brand">
-            <div class="logo">A1</div>
-            <div>
-                <h1>Ageless One</h1>
-                <p>AI BUSINESS SUITE · v1.1</p>
-            </div>
-        </div>
-
-       <div class="nav-title">OVERVIEW</div>
-        <div class="nav">
-            <a class="active" href="{{ route('admin.dashboard') }}">🏠 Executive Dashboard</a>
-        </div>
-
-
-
-
-<div class="nav-title">SERVICE MANAGEMENT</div>
-
-<div class="nav">
-    <a href="{{ route('admin.parks') }}">🏢 Parks / Clients</a>
-    <a href="{{ route('admin.parks.create') }}">➕ Add Park</a>
-
-    <a href="{{ route('admin.tickets') }}">🎫 Complaint Tickets</a>
-    <a href="{{ route('admin.tickets.create') }}">➕ Create Ticket</a>
-
-    <a href="{{ route('admin.spare-parts') }}">📦 Spare Parts</a>
-    <a href="{{ route('admin.spare-parts.create') }}">➕ Add Spare Part</a>
-
-    <a href="#">📤 Spare Part Requests</a>
-    <a href="#">📄 Service Reports</a>
-    <a href="#">⭐ Customer Feedback</a>
-    <a href="#">🗺 Live Tracking</a>
-</div>
-
-
-<div class="nav-title">INVENTORY</div>
-
-<div class="nav">
-    <a href="#">📦 Stock Dashboard</a>
-    <a href="#">📥 Purchase Orders</a>
-    <a href="#">🚚 Suppliers</a>
-    <a href="#">🔄 Stock In</a>
-    <a href="#">📤 Stock Out</a>
-    <a href="#">📊 Inventory Reports</a>
-</div>
-
-
-<div class="nav-title">HR & STAFF</div>
-
-<div class="nav">
-    <a href="{{ route('admin.attendance') }}">🕒 Attendance</a>
-    <a href="{{ route('admin.users') }}">👥 Employees</a>
-    <a href="#">💰 Payroll</a>
-    <a href="#">🏖 Leave Management</a>
-</div>
-
-
-<div class="nav-title">FINANCE</div>
-
-<div class="nav">
-    <a href="#">💵 Accounts</a>
-    <a href="#">🧾 Invoices</a>
-    <a href="#">💳 Payments</a>
-    <a href="#">📈 Expenses</a>
-</div>
-
-
-<div class="nav-title">SALES & CRM</div>
-
-<div class="nav">
-    <a href="#">🤝 Customers</a>
-    <a href="#">📞 Leads</a>
-    <a href="#">📋 Quotations</a>
-    <a href="#">📄 Contracts</a>
-</div>
-
-
-<div class="nav-title">REPORTS</div>
-
-<div class="nav">
-    <a href="#">📊 Dashboard Reports</a>
-    <a href="#">📈 Analytics</a>
-    <a href="#">📑 Export Reports</a>
-</div>
-
-
-<div class="nav-title">AI</div>
-
-<div class="nav">
-    <a href="#">🤖 ASIM AI Assistant</a>
-    <a href="#">💬 AI Chat</a>
-</div>
-
-
-<div class="nav-title">SYSTEM</div>
-
-<div class="nav">
-    <a href="#">⚙ Settings</a>
-    <a href="#">🔐 Roles & Permissions</a>
-    <a href="#">📝 Activity Logs</a>
-    <a href="#">💾 Backup & Restore</a>
-</div>
-<div class="nav">
-
-    <a href="{{ route('admin.attendance') }}">
-        🕒 Attendance
-    </a>
-
-    <a href="{{ route('admin.users') }}">
-        👥 Users
-    </a>
-
-    <a href="#">
-        ⚙ Settings
-    </a>
-
-</div>
-    </aside>
-
-    <main class="main">
-
-        <div class="top">
-            <input class="search" placeholder="Search attendance, staff, date...">
-
-            <div class="user">
-                <div class="avatar">{{ $initials }}</div>
-                <div>
-                    <strong>{{ $authUser->name }}</strong><br>
-                    <small class="muted">{{ $roleName }}</small>
-                </div>
-
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="logout">Logout</button>
-                </form>
-            </div>
-        </div>
-
-        <div class="content">
-
-            <div style="display:flex;justify-content:space-between;align-items:center">
+<div style="display:flex;justify-content:space-between;align-items:center">
                 <div>
                     <h2>Staff Attendance</h2>
                     <p class="muted">Punch In / Punch Out records</p>
@@ -190,6 +47,82 @@ h2{font-size:21px;font-weight:700;margin:0}.muted{color:var(--mut)}
 
                 <a href="{{ route('admin.dashboard') }}" class="btn-blue">Back Dashboard</a>
             </div>
+
+            @if(session('success'))
+                <div class="alert-app alert-success-app">{{ session('success') }}</div>
+            @endif
+            @if($errors->any())
+                <div class="alert-app alert-error-app">{{ $errors->first() }}</div>
+            @endif
+
+            <div class="panel">
+                <div style="padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center">
+                    <div><h3 style="margin:0;font-size:17px">Attendance Photo Alerts</h3><p class="muted" style="margin:5px 0 0">Mismatch or unverified photos are saved and reported here for Admin review.</p></div>
+                    <span class="badge-out">{{ $photoAlerts->whereNull('read_at')->count() }} Unread</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Status</th><th>Staff</th><th>Message</th><th>Photos</th><th>Time</th><th>Action</th></tr></thead>
+                        <tbody>
+                        @forelse($photoAlerts as $alert)
+                            @php
+                                $attendanceAlert = $alert->attendance;
+                                $action = data_get($alert->data, 'action');
+                                $punchPhoto = $action === 'Punch Out' ? $attendanceAlert?->punch_out_photo : $attendanceAlert?->punch_in_photo;
+                            @endphp
+                            <tr style="opacity:{{ $alert->read_at ? '.65' : '1' }}">
+                                <td><span class="{{ data_get($alert->data, 'verification_status') === 'mismatch' ? 'badge-out' : 'badge-done' }}">{{ strtoupper(str_replace('_',' ',data_get($alert->data, 'verification_status','review'))) }}</span></td>
+                                <td><strong>{{ $alert->user?->display_name ?? 'Deleted staff' }}</strong><br><span class="muted">{{ $alert->user?->email ?? '-' }}</span></td>
+                                <td>{{ $alert->message }}<br><span class="muted">{{ data_get($alert->data, 'reason') }}</span></td>
+                                <td><div class="actions">
+                                    @if($alert->user?->photo)<a target="_blank" href="{{ asset('storage/'.$alert->user->photo) }}"><img class="worker-photo" src="{{ asset('storage/'.$alert->user->photo) }}" title="Registered photo"></a>@endif
+                                    @if($punchPhoto)<a target="_blank" href="{{ asset('storage/'.$punchPhoto) }}"><img class="worker-photo" src="{{ asset('storage/'.$punchPhoto) }}" title="Punch photo"></a>@endif
+                                </div></td>
+                                <td>{{ $alert->created_at?->format('d M Y h:i A') }}</td>
+                                <td>@if(!$alert->read_at)<form method="POST" action="{{ route('admin.notifications.read', $alert) }}">@csrf<button class="btn-ok" type="submit">Mark Read</button></form>@else<span class="badge-done">Read</span>@endif</td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="6" style="text-align:center;padding:25px" class="muted">No photo verification alerts.</td></tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div style="padding:16px 18px;border-bottom:1px solid var(--line)">
+                    <h3 style="margin:0;font-size:17px">Pending Worker Attendance</h3>
+                    <p class="muted" style="margin:5px 0 0">Attendance not yet approved by the Site Supervisor. Admin can approve or reject it here.</p>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Worker</th><th>Site / Work</th><th>Date</th><th>Time</th><th>Recorded By</th><th>Photo</th><th>Admin Action</th></tr></thead>
+                        <tbody>
+                        @forelse($pendingWorkerAttendances as $record)
+                            <tr>
+                                <td><strong>{{ $record->worker?->name ?? 'Deleted worker' }}</strong><br><span class="muted">{{ $record->worker?->worker_code ?? '-' }}</span></td>
+                                <td><strong>{{ $record->workSite?->site_name ?? '-' }}</strong><br><span class="muted">{{ $record->siteZone?->zone_name ?? ($record->work_description ?: 'General work') }}</span></td>
+                                <td>{{ $record->attendance_date?->format('d M Y') }}</td>
+                                <td>{{ $record->punch_in ?: '-' }} — {{ $record->punch_out ?: 'Still inside' }}</td>
+                                <td>{{ $record->recordedBy?->name ?? '-' }}</td>
+                                <td>@if($record->punch_in_photo)<a href="{{ asset('storage/'.$record->punch_in_photo) }}" target="_blank"><img class="worker-photo" src="{{ asset('storage/'.$record->punch_in_photo) }}" alt="Attendance photo"></a>@else - @endif</td>
+                                <td>
+                                    <div class="actions">
+                                        <form method="POST" action="{{ route('admin.worker-attendance.approve', $record) }}">@csrf<button class="btn-ok" type="submit">Approve</button></form>
+                                        <form method="POST" action="{{ route('admin.worker-attendance.reject', $record) }}" class="actions">@csrf<input class="reject-input" name="rejection_reason" maxlength="500" placeholder="Rejection reason" required><button class="btn-reject" type="submit">Reject</button></form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="7" style="text-align:center;padding:25px" class="muted">No pending worker attendance.</td></tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                <div style="padding:18px">{{ $pendingWorkerAttendances->withQueryString()->links() }}</div>
+            </div>
+
+            <div style="margin-top:24px"><h3 style="margin:0;font-size:17px">Staff Attendance</h3></div>
 
             <div class="panel">
                 <div class="table-responsive">
@@ -205,6 +138,7 @@ h2{font-size:21px;font-weight:700;margin:0}.muted{color:var(--mut)}
                                 <th>Punch Out</th>
                                 <th>Out Location</th>
                                 <th>Total Time</th>
+                                <th>Photo Verification</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -250,6 +184,14 @@ h2{font-size:21px;font-weight:700;margin:0}.muted{color:var(--mut)}
                                 </td>
 
                                 <td>
+                                    @php $verifyStatus = $attendance->punch_out ? $attendance->punch_out_verification_status : $attendance->punch_in_verification_status; $verifyScore = $attendance->punch_out ? $attendance->punch_out_match_score : $attendance->punch_in_match_score; @endphp
+                                    @if($verifyStatus === 'matched')<span class="badge-in">Verified {{ $verifyScore !== null ? $verifyScore.'%' : '' }}</span>
+                                    @elseif($verifyStatus === 'mismatch')<span class="badge-out">Mismatch {{ $verifyScore !== null ? $verifyScore.'%' : '' }}</span>
+                                    @elseif($verifyStatus)<span class="badge-done">Review Required</span>
+                                    @else - @endif
+                                </td>
+
+                                <td>
                                     @if(!$attendance->punch_out)
                                         <span class="badge-in">In Office</span>
                                     @else
@@ -263,14 +205,8 @@ h2{font-size:21px;font-weight:700;margin:0}.muted{color:var(--mut)}
                 </div>
 
                 <div style="padding:18px">
-                    {{ $attendances->links() }}
+                    {{ $attendances->withQueryString()->links() }}
                 </div>
             </div>
-
-        </div>
-
-    </main>
-
-</div>
 
 @endsection

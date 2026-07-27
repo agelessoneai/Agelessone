@@ -15,7 +15,16 @@ class AuthController extends Controller
         $credentials = $request->validate(['email' => ['required','email'], 'password' => ['required']]);
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return auth()->user()->isAdmin() ? redirect()->route('admin.dashboard') : redirect()->route('user.dashboard');
+            return match (auth()->user()->role) {
+                'admin' => redirect()->route('admin.dashboard'),
+                'security' => redirect()->route('security.dashboard'),
+                'site_supervisor' => redirect()->route('supervisor.dashboard'),
+                'sales' => redirect()->route('sales.dashboard'),
+                'inventory_manager' => redirect()->route('office-inventory.index'),
+                'workshop_manager' => redirect()->route('workshops.index'),
+                'accounts' => redirect()->route('accounts.expenses.index'),
+                default => redirect()->route('user.dashboard'),
+            };
         }
         return back()->withErrors(['email' => 'Invalid email or password.'])->onlyInput('email');
     }
@@ -26,7 +35,7 @@ class AuthController extends Controller
             'email' => ['required','email','max:255','unique:users,email'],
             'password' => ['required','confirmed','min:6'],
         ]);
-        $user = User::create(['name'=>$data['name'], 'email'=>$data['email'], 'password'=>Hash::make($data['password']), 'role'=>'user']);
+        $user = User::create(['name'=>$data['name'], 'email'=>$data['email'], 'password'=>Hash::make($data['password']), 'role'=>'office_staff']);
         Auth::login($user);
         return redirect()->route('user.dashboard');
     }

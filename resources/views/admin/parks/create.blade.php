@@ -1,5 +1,4 @@
-@extends('layouts.app')
-
+@extends('layouts.admin')
 @section('content')
 
 <style>
@@ -145,104 +144,7 @@ color:#8794ac;
 }
 </style>
 
-<div class="app">
-
-    <aside class="side">
-
-        <div class="brand">
-            <div class="logo">A1</div>
-            <div>
-                <h1>Ageless One</h1>
-                <p>AI BUSINESS SUITE · v1.1</p>
-            </div>
-        </div>
-
-        <div class="nav-title">OVERVIEW</div>
-
-        <div class="nav">
-            <a href="{{ route('admin.dashboard') }}">
-                🏠 Executive Dashboard
-            </a>
-        </div>
-
-        <div class="nav-title">SERVICE MANAGEMENT</div>
-
-        <div class="nav">
-
-            <a href="{{ route('admin.parks') }}">
-                🏢 Parks / Clients
-            </a>
-
-            <a class="active"
-               href="{{ route('admin.parks.create') }}">
-                ➕ Add Park
-            </a>
-
-            <a href="{{ route('admin.tickets') }}">
-                🎫 Complaint Tickets
-            </a>
-
-            <a href="{{ route('admin.tickets.create') }}">
-                ➕ Create Ticket
-            </a>
-
-        </div>
-
-        <div class="nav-title">ADMIN</div>
-
-        <div class="nav">
-
-            <a href="{{ route('admin.attendance') }}">
-                🕒 Attendance
-            </a>
-
-            <a href="{{ route('admin.users') }}">
-                👥 Users
-            </a>
-
-            <a href="#">
-                ⚙ Settings
-            </a>
-
-        </div>
-
-    </aside>
-
-    <main class="main">
-
-        <div class="top">
-
-            <input class="search"
-                   placeholder="Search parks...">
-
-            <div class="user">
-
-                <div class="avatar">
-                    {{ strtoupper(substr(Auth::user()->name,0,1)) }}
-                </div>
-
-                <div>
-                    <strong>{{ Auth::user()->name }}</strong><br>
-                    <small class="muted">
-                        Administrator
-                    </small>
-                </div>
-
-                <form method="POST"
-                      action="{{ route('logout') }}">
-                    @csrf
-                    <button class="logout">
-                        Logout
-                    </button>
-                </form>
-
-            </div>
-
-        </div>
-
-        <div class="content">
-
-            <div class="card-dark">
+<div class="card-dark">
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
 
@@ -309,11 +211,5 @@ color:#8794ac;
                 </form>
 
             </div>
-
-        </div>
-
-    </main>
-
-</div>
 
 @endsection

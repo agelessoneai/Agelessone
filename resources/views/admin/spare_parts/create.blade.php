@@ -1,5 +1,4 @@
-@extends('layouts.app')
-
+@extends('layouts.admin')
 @section('content')
 
 <style>
@@ -143,59 +142,6 @@ margin-right:10px;
 }
 </style>
 
-<div class="app">
-
-<aside class="side">
-
-<div class="brand">
-<div class="logo">A1</div>
-
-<div>
-<h1>Ageless One</h1>
-<p>AI BUSINESS OS</p>
-</div>
-
-</div>
-
-<div class="nav-title">SERVICE</div>
-
-<div class="nav">
-<a href="{{ route('admin.dashboard') }}">🏠 Dashboard</a>
-<a href="{{ route('admin.parks') }}">🏢 Parks</a>
-<a href="{{ route('admin.tickets') }}">🎫 Tickets</a>
-<a class="active" href="{{ route('admin.spare-parts') }}">📦 Spare Parts</a>
-</div>
-
-</aside>
-
-<main class="main">
-
-<div class="top">
-
-<input class="search" placeholder="Search...">
-
-<div class="user">
-
-<div class="avatar">
-{{ strtoupper(substr(Auth::user()->name,0,1)) }}
-</div>
-
-<div>
-<strong>{{ Auth::user()->name }}</strong><br>
-<small style="color:#8794ac;">Administrator</small>
-</div>
-
-<form method="POST" action="{{ route('logout') }}">
-@csrf
-<button class="logout">Logout</button>
-</form>
-
-</div>
-
-</div>
-
-<div class="content">
-
 <div class="card-dark">
 
 <h2>Add Spare Part</h2>
@@ -321,12 +267,6 @@ class="btn-blue">
 </form>
 
 </div>
-
-</div>
-
-</main>
-
-</div>
 <script>
 document.getElementById('image').addEventListener('change', function(e){
 
@@ -349,4 +289,6 @@ document.getElementById('image').addEventListener('change', function(e){
 
 });
 </script>
+
+
 @endsection

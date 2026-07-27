@@ -1,307 +1,381 @@
-<?php $__env->startSection('content'); ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ageless One Login</title>
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-*{
-    box-sizing:border-box;
-    font-family:'Poppins',sans-serif;
-}
+    <style>
+        :root{
+            --bg:#07101f;
+            --panel:#0f172a;
+            --panel-soft:#111c33;
+            --border:#24324b;
+            --text:#f8fafc;
+            --muted:#93a4bf;
+            --primary:#2563eb;
+            --primary-light:#3b82f6;
+        }
 
-html,
-body{
-    margin:0 !important;
-    padding:0 !important;
-    width:100%;
-    min-height:100%;
-    background:#070d1a !important;
-    overflow:hidden !important;
-}
+        *{
+            box-sizing:border-box;
+        }
 
-.navbar,
-header{
-    display:none !important;
-}
+        html,body{
+            margin:0;
+            min-height:100%;
+            font-family:'Poppins',sans-serif;
+            background:var(--bg);
+            color:var(--text);
+        }
 
-.container,
-.container-fluid{
-    max-width:100% !important;
-    width:100% !important;
-    margin:0 !important;
-    padding:0 !important;
-}
+        body{
+            min-height:100vh;
+        }
 
-.login-page{
-    height:100vh;
-    width:100vw;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:18px;
-    background:
-        radial-gradient(circle at 0% 100%, rgba(124,58,237,.45), transparent 28%),
-        radial-gradient(circle at 100% 0%, rgba(37,99,235,.38), transparent 28%),
-        linear-gradient(135deg,#050914,#080f22 45%,#0d1230);
-    color:#fff;
-    overflow:hidden;
-}
+        .home-page{
+            min-height:100dvh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:24px 16px;
+            background:
+                radial-gradient(circle at 12% 88%, rgba(37,99,235,.18), transparent 30%),
+                radial-gradient(circle at 88% 12%, rgba(59,130,246,.12), transparent 28%),
+                linear-gradient(145deg,#06101f,#0a1427 52%,#0b1630);
+        }
 
-.login-wrap{
-    width:100%;
-    max-width:520px;
-    text-align:center;
-    transform:scale(.88);
-}
+        .home-card{
+            width:min(100%, 920px);
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            overflow:hidden;
+            border:1px solid var(--border);
+            border-radius:24px;
+            background:rgba(15,23,42,.95);
+            box-shadow:0 28px 80px rgba(0,0,0,.42);
+        }
 
-.logo{
-    width:74px;
-    height:74px;
-    border-radius:18px;
-    background:linear-gradient(135deg,#4f7cff,#7c3aed);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:30px;
-    font-weight:800;
-    margin:0 auto 14px;
-}
+        .home-intro{
+            padding:48px 42px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            background:
+                linear-gradient(145deg,rgba(37,99,235,.20),rgba(15,23,42,.96)),
+                #0f172a;
+            border-right:1px solid var(--border);
+        }
 
-.brand-title{
-    font-size:34px;
-    font-weight:800;
-    margin:0;
-}
+        .logo{
+            width:62px;
+            height:62px;
+            border-radius:16px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            margin-bottom:20px;
+            background:linear-gradient(135deg,var(--primary-light),var(--primary));
+            color:#fff;
+            font-size:25px;
+            font-weight:700;
+            box-shadow:0 14px 35px rgba(37,99,235,.25);
+        }
 
-.brand-subtitle{
-    color:#9aa6c4;
-    letter-spacing:6px;
-    font-size:14px;
-    margin-top:6px;
-    margin-bottom:24px;
-}
+        .home-intro h1{
+            margin:0;
+            font-size:34px;
+            line-height:1.2;
+            font-weight:700;
+        }
 
-.login-card{
-    background:rgba(15,23,42,.78);
-    border:1px solid rgba(148,163,184,.22);
-    border-radius:24px;
-    padding:30px 36px;
-    text-align:left;
-    box-shadow:0 30px 90px rgba(0,0,0,.55);
-    backdrop-filter:blur(18px);
-}
+        .home-intro p{
+            margin:14px 0 0;
+            color:var(--muted);
+            font-size:15px;
+            line-height:1.75;
+        }
 
-.login-card h3{
-    text-align:center;
-    font-size:28px;
-    font-weight:800;
-    margin:0;
-    color:#fff;
-}
+        .brand-note{
+            margin-top:24px;
+            color:#7fa8ef;
+            letter-spacing:3px;
+            font-size:11px;
+            font-weight:600;
+        }
 
-.login-card .desc{
-    text-align:center;
-    color:#a6b0cf;
-    margin:8px 0 26px;
-    font-size:15px;
-}
+        .login-section{
+            padding:40px 36px;
+            display:flex;
+            align-items:center;
+        }
 
-.form-label{
-    color:#fff;
-    font-weight:600;
-    margin-bottom:8px;
-}
+        .login-form{
+            width:100%;
+        }
 
-.form-control{
-    height:52px;
-    border-radius:12px;
-    background:#141d31 !important;
-    border:1px solid #334155;
-    color:#fff !important;
-    padding:0 16px;
-    font-size:15px;
-}
+        .login-form h2{
+            margin:0;
+            text-align:center;
+            font-size:27px;
+            font-weight:700;
+        }
 
-.form-control::placeholder{
-    color:#6f7b99;
-}
+        .login-form .desc{
+            margin:7px 0 24px;
+            text-align:center;
+            color:var(--muted);
+            font-size:14px;
+        }
 
-.form-control:focus{
-    border-color:#6366f1;
-    box-shadow:0 0 0 4px rgba(99,102,241,.18);
-}
+        .form-group{
+            margin-bottom:17px;
+        }
 
-.form-check-input{
-    width:20px;
-    height:20px;
-    background:transparent;
-    border:2px solid #7c3aed;
-}
+        .form-label{
+            display:block;
+            margin-bottom:7px;
+            color:#eaf0fb;
+            font-size:13px;
+            font-weight:600;
+        }
 
-.form-check-label{
-    color:#fff;
-    margin-left:8px;
-    font-size:14px;
-}
+        .form-control{
+            width:100%;
+            min-height:48px;
+            padding:12px 14px;
+            border:1px solid #31415f;
+            border-radius:11px;
+            outline:none;
+            background:var(--panel-soft);
+            color:#fff;
+            font-size:15px;
+        }
 
-.forgot-link,
-.register-link{
-    color:#8b5cf6;
-    text-decoration:none;
-    font-weight:600;
-    font-size:14px;
-}
+        .form-control::placeholder{
+            color:#71819e;
+        }
 
-.btn-login{
-    height:54px;
-    border-radius:14px;
-    border:0;
-    color:#fff;
-    font-size:17px;
-    font-weight:700;
-    background:linear-gradient(90deg,#4f7cff,#7c3aed);
-}
+        .form-control:focus{
+            border-color:var(--primary-light);
+            box-shadow:0 0 0 3px rgba(59,130,246,.14);
+        }
 
-.divider{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    color:#8b97b5;
-    margin:22px 0 18px;
-    font-size:14px;
-}
+        .remember-row{
+            margin:2px 0 18px;
+            display:flex;
+            align-items:center;
+        }
 
-.divider:before,
-.divider:after{
-    content:"";
-    flex:1;
-    height:1px;
-    background:#334155;
-}
+        .remember-row input{
+            width:18px;
+            height:18px;
+            margin:0;
+            accent-color:var(--primary);
+        }
 
-.demo-box{
-    margin-top:20px;
-    background:rgba(30,41,59,.72);
-    border:1px solid rgba(148,163,184,.2);
-    border-radius:16px;
-    padding:16px 20px;
-    color:#dbe4ff;
-    font-size:14px;
-}
+        .remember-row label{
+            margin-left:8px;
+            color:#d7e0ef;
+            font-size:13px;
+        }
 
-.demo-box strong{
-    color:#fff;
-}
+        .login-button{
+            width:100%;
+            min-height:49px;
+            border:0;
+            border-radius:11px;
+            cursor:pointer;
+            background:linear-gradient(90deg,var(--primary),var(--primary-light));
+            color:#fff;
+            font-size:15px;
+            font-weight:700;
+            transition:.2s ease;
+        }
 
-.demo-box span{
-    color:#6ea8ff;
-}
+        .login-button:hover{
+            transform:translateY(-1px);
+            box-shadow:0 12px 28px rgba(37,99,235,.28);
+        }
 
-@media(max-height:760px){
-    .login-wrap{
-        transform:scale(.78);
-    }
-}
+        .error-text{
+            display:block;
+            margin-top:6px;
+            color:#f87171;
+            font-size:12px;
+        }
 
-@media(max-width:600px){
-    .login-wrap{
-        transform:scale(.92);
-    }
+        .footer-note{
+            margin-top:18px;
+            text-align:center;
+            color:#71819e;
+            font-size:12px;
+        }
 
-    .login-card{
-        padding:24px 20px;
-    }
+        @media(max-width:768px){
+            .desktop-only-text{
+                display:none;
+            }
 
-    .brand-title{
-        font-size:30px;
-    }
-}
-</style>
+            .home-page{
+                align-items:flex-start;
+                padding:16px 12px;
+            }
 
-<div class="login-page">
-    <div class="login-wrap">
+            .home-card{
+                grid-template-columns:1fr;
+                border-radius:18px;
+            }
 
-        <div class="logo">A1</div>
+            .home-intro{
+                padding:26px 22px;
+                border-right:0;
+                border-bottom:1px solid var(--border);
+                text-align:center;
+                align-items:center;
+            }
 
-        <h1 class="brand-title">Ageless One</h1>
-        <div class="brand-subtitle">AI BUSINESS SUITE</div>
+            .logo{
+                width:54px;
+                height:54px;
+                margin-bottom:14px;
+                font-size:22px;
+            }
 
-        <div class="login-card">
+            .home-intro h1{
+                font-size:25px;
+            }
 
-            <h3>Welcome Back</h3>
-            <div class="desc">Sign in to your account and continue</div>
+            .home-intro p{
+                font-size:13px;
+                line-height:1.6;
+            }
 
-            <form method="POST" action="<?php echo e(route('login.post')); ?>">
-                <?php echo csrf_field(); ?>
+            .brand-note{
+                margin-top:14px;
+            }
 
-                <div class="mb-4">
-                    <label class="form-label">Email Address</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value="<?php echo e(old('email')); ?>"
-                        class="form-control"
-                        placeholder="Enter your email address"
-                        required
-                        autofocus>
+            .login-section{
+                padding:26px 20px;
+            }
 
-                    <?php $__errorArgs = ['email'];
+            .login-form h2{
+                font-size:23px;
+            }
+
+            .form-control{
+                min-height:46px;
+                font-size:16px;
+            }
+        }
+
+        @media(max-width:380px){
+            .home-intro{
+                padding:22px 16px;
+            }
+
+            .login-section{
+                padding:22px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="home-page">
+    <div class="home-card">
+
+        <section class="home-intro">
+            <div class="logo">A1</div>
+            <h1>Ageless One</h1>
+            <p class="desktop-only-text">
+                Manage work sites, attendance, security, workers,
+                inventory and daily operations from one platform.
+            </p>
+            <div class="brand-note">AI BUSINESS SUITE</div>
+        </section>
+
+        <section class="login-section">
+            <div class="login-form">
+                <h2>Welcome Back</h2>
+                <div class="desc">Sign in to continue</div>
+
+                <form method="POST" action="<?php echo e(route('login.post')); ?>">
+                    <?php echo csrf_field(); ?>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address</label>
+                        <input
+                            id="email"
+                            type="email"
+                            name="email"
+                            value="<?php echo e(old('email')); ?>"
+                            class="form-control"
+                            placeholder="Enter your email address"
+                            autocomplete="email"
+                            required
+                            autofocus
+                        >
+                        <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                        <small class="text-danger"><?php echo e($message); ?></small>
-                    <?php unset($message);
+                            <small class="error-text"><?php echo e($message); ?></small>
+                        <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label">Password</label>
-                    <input
-                        type="password"
-                        name="password"
-                        class="form-control"
-                        placeholder="Enter your password"
-                        required>
-
-                    <?php $__errorArgs = ['password'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                        <small class="text-danger"><?php echo e($message); ?></small>
-                    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="remember" id="remember">
-                        <label class="form-check-label" for="remember">Remember me</label>
                     </div>
 
-                   
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input
+                            id="password"
+                            type="password"
+                            name="password"
+                            class="form-control"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+                        <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <small class="error-text"><?php echo e($message); ?></small>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                    </div>
+
+                    <div class="remember-row">
+                        <input
+                            type="checkbox"
+                            name="remember"
+                            id="remember"
+                            value="1"
+                            <?php echo e(old('remember') ? 'checked' : ''); ?>
+
+                        >
+                        <label for="remember">Remember me</label>
+                    </div>
+
+                    <button type="submit" class="login-button">
+                        Login
+                    </button>
+                </form>
+
+                <div class="footer-note">
+                    Ageless One ERP · Secure Access
                 </div>
-
-                <button class="btn btn-login w-100" type="submit">
-                    Login
-                </button>
-            </form>
-
-            <div class="divider">OR</div>
-
-            <div class="text-center text-light">
-                New to Ageless One?
-                <a href="<?php echo e(route('register')); ?>" class="register-link">Create an account</a>
             </div>
+        </section>
 
-           
-        </div>
     </div>
-</div>
-
-<?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\ageless-admin-panel\resources\views/auth/login.blade.php ENDPATH**/ ?>
+</div>                                                         
+       </html><?php /**PATH C:\xampp\htdocs\ageless-admin-panel\resources\views/auth/login.blade.php ENDPATH**/ ?>

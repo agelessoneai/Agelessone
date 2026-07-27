@@ -1,5 +1,4 @@
-@extends('layouts.app')
-
+@extends('layouts.admin')
 @section('content')
 
 @php
@@ -486,204 +485,7 @@ header{
 }
 </style>
 
-<div class="app">
-
-    <aside class="side">
-
-        <div class="brand">
-            <div class="logo">A1</div>
-
-            <div>
-                <h1>Ageless One</h1>
-                <p>AI BUSINESS SUITE · v1.1</p>
-            </div>
-        </div>
-
-        <div class="nav-title">Overview</div>
-
-        <div class="nav">
-            <a
-                href="{{ route('admin.dashboard') }}"
-                class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
-            >
-                🏠 Executive Dashboard
-            </a>
-        </div>
-
-        <div class="nav-title">Service Management</div>
-
-        <div class="nav">
-            <a
-                href="{{ route('admin.parks') }}"
-                class="{{ request()->routeIs('admin.parks') ? 'active' : '' }}"
-            >
-                🏢 Parks / Clients
-            </a>
-
-            <a
-                href="{{ route('admin.parks.create') }}"
-                class="{{ request()->routeIs('admin.parks.create') ? 'active' : '' }}"
-            >
-                ➕ Add Park
-            </a>
-
-            <a
-                href="{{ route('admin.tickets') }}"
-                class="{{ request()->routeIs('admin.tickets') || request()->routeIs('admin.tickets.show') ? 'active' : '' }}"
-            >
-                🎫 Complaint Tickets
-            </a>
-
-            <a
-                href="{{ route('admin.tickets.create') }}"
-                class="{{ request()->routeIs('admin.tickets.create') ? 'active' : '' }}"
-            >
-                ➕ Create Ticket
-            </a>
-        </div>
-
-        <div class="nav-title">Inventory</div>
-
-        <div class="nav">
-            <a
-                href="{{ route('admin.spare-parts') }}"
-                class="{{ request()->routeIs('admin.spare-parts') || request()->routeIs('admin.spare-parts.edit') ? 'active' : '' }}"
-            >
-                📦 Spare Parts
-            </a>
-
-            <a
-                href="{{ route('admin.spare-parts.create') }}"
-                class="{{ request()->routeIs('admin.spare-parts.create') ? 'active' : '' }}"
-            >
-                ➕ Add Spare Part
-            </a>
-
-            @if(Route::has('admin.inventory-categories'))
-                <a
-                    href="{{ route('admin.inventory-categories') }}"
-                    class="{{ request()->routeIs('admin.inventory-categories*') ? 'active' : '' }}"
-                >
-                    🗂 Inventory Categories
-                </a>
-            @endif
-
-            <a href="#">🔄 Stock In</a>
-            <a href="#">📤 Stock Out</a>
-        </div>
-
-        <div class="nav-title">Site Management</div>
-
-        <div class="nav">
-            <a
-                href="{{ route('admin.work-sites') }}"
-                class="{{ request()->routeIs('admin.work-sites') || request()->routeIs('admin.work-sites.edit') ? 'active' : '' }}"
-            >
-                🏗 Work Sites
-            </a>
-
-            <a
-                href="{{ route('admin.work-sites.create') }}"
-                class="{{ request()->routeIs('admin.work-sites.create') ? 'active' : '' }}"
-            >
-                ➕ Add Work Site
-            </a>
-
-            @if(Route::has('admin.site-zones.index'))
-                <a
-                    href="{{ route('admin.site-zones.index') }}"
-                    class="{{ request()->routeIs('admin.site-zones*') ? 'active' : '' }}"
-                >
-                    🗺 Site Zones
-                </a>
-            @endif
-
-            @if(Route::has('admin.site-assets'))
-                <a
-                    href="{{ route('admin.site-assets') }}"
-                    class="{{ request()->routeIs('admin.site-assets') || request()->routeIs('admin.site-assets.edit') ? 'active' : '' }}"
-                >
-                    🚜 Machinery & Assets
-                </a>
-            @endif
-
-            @if(Route::has('admin.site-assets.create'))
-                <a
-                    href="{{ route('admin.site-assets.create') }}"
-                    class="{{ request()->routeIs('admin.site-assets.create') ? 'active' : '' }}"
-                >
-                    ➕ Add Asset
-                </a>
-            @endif
-        </div>
-
-        <div class="nav-title">HR & Staff</div>
-
-        <div class="nav">
-            <a
-                href="{{ route('admin.attendance') }}"
-                class="{{ request()->routeIs('admin.attendance') ? 'active' : '' }}"
-            >
-                🕒 Attendance
-            </a>
-
-            <a
-                href="{{ route('admin.users') }}"
-                class="{{ request()->routeIs('admin.users') ? 'active' : '' }}"
-            >
-                👥 Employees
-            </a>
-
-            <a href="#">🏖 Leave Management</a>
-        </div>
-
-        <div class="nav-title">Sales & CRM</div>
-
-        <div class="nav">
-            <a href="#">🤝 Customers</a>
-            <a href="#">📞 Leads</a>
-            <a href="#">📋 Quotations</a>
-            <a href="#">📄 Contracts</a>
-        </div>
-
-        <div class="nav-title">System</div>
-
-        <div class="nav">
-            <a href="#">⚙ Settings</a>
-        </div>
-
-    </aside>
-
-    <main class="main">
-
-        <div class="top">
-            <input
-                class="search"
-                type="search"
-                placeholder="Search tickets, clients, projects, inventory..."
-            >
-
-            <div class="user">
-                <div class="avatar">{{ $initials }}</div>
-
-                <div>
-                    <strong>{{ $user->name }}</strong><br>
-                    <small class="muted">{{ $roleName }}</small>
-                </div>
-
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <button class="logout" type="submit">
-                        Logout
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <div class="content">
-
-            <div class="page-head">
+<div class="page-head">
                 <div>
                     <h2>Executive Dashboard</h2>
 
@@ -698,6 +500,13 @@ header{
                     System Online
                 </div>
             </div>
+
+            @if(($unreadAdminNotifications ?? 0) > 0)
+                <div style="margin:18px 0;padding:16px 18px;border:1px solid rgba(255,90,110,.45);background:rgba(255,90,110,.12);border-radius:13px;display:flex;justify-content:space-between;gap:15px;align-items:center">
+                    <div><strong>⚠️ {{ $unreadAdminNotifications }} Attendance Photo Alert(s)</strong><br><span style="color:var(--mut)">Punch records were saved, but the uploaded photos need Admin review.</span></div>
+                    <a href="{{ route('admin.attendance') }}" class="btn-blue">Review Alerts</a>
+                </div>
+            @endif
 
             <div class="kpis">
 
@@ -799,13 +608,9 @@ header{
                     </div>
                 @endif
 
-                <a href="{{ route('admin.spare-parts') }}" class="module-card">
-                    <div class="module-icon">📦</div>
-
-                    <div>
-                        <h3>Spare Parts</h3>
-                        <p>Manage inventory, images, stock and low-stock alerts.</p>
-                    </div>
+                <a href="{{ route('workshops.index') }}" class="module-card">
+                    <div class="module-icon">🏭</div>
+                    <div><h3>Workshop</h3><p>Manage workshop in-charge, inventory, workers, projects, photos and drawings.</p></div>
                 </a>
 
                 <a href="{{ route('admin.tickets') }}" class="module-card">
@@ -826,21 +631,15 @@ header{
                     </div>
                 </a>
 
-                <a href="{{ route('admin.inventory-items') }}" class="module-card">
+                <a href="{{ route('office-inventory.index') }}" class="module-card">
                     <div class="module-icon">📦</div>
 
                     <div>
-                        <h3>Smart Inventory</h3>
-                        <p>Manage category-wise stock, warehouse, rack and item value.</p>
+                        <h3>Inventory</h3>
+                        <p>Manage warehouse and office inventory, stock movements and history.</p>
                     </div>
                 </a>
 
             </div>
-
-        </div>
-
-    </main>
-
-</div>
 
 @endsection

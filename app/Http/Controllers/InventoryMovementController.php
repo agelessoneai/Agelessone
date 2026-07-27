@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\InventoryItem;
 use App\Models\InventoryMovement;
+use App\Models\WorkSite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +13,7 @@ class InventoryMovementController extends Controller
 {
     public function index(Request $request)
     {
-        $query = InventoryMovement::with(['item.category', 'user']);
+        $query = InventoryMovement::with(['item.category', 'user', 'workSite']);
 
         if ($request->filled('type')) {
             $query->where('type', $request->type);
@@ -110,7 +111,11 @@ class InventoryMovementController extends Controller
             ->orderBy('item_name')
             ->get();
 
-        return view('admin.inventory_movements.stock_out', compact('items'));
+        $sites = WorkSite::whereIn('status', ['planning', 'active', 'on_hold'])
+            ->orderBy('site_name')
+            ->get();
+
+        return view('admin.inventory_movements.stock_out', compact('items', 'sites'));
     }
 
     public function storeStockOut(Request $request)
@@ -120,6 +125,9 @@ class InventoryMovementController extends Controller
             'quantity' => 'required|integer|min:1',
             'reference_no' => 'nullable|string|max:100',
             'warehouse' => 'nullable|string|max:150',
+            'work_site_id' => 'nullable|exists:work_sites,id',
+            'used_for' => 'nullable|required_with:work_site_id|string|max:255',
+            'issued_to' => 'nullable|string|max:255',
             'note' => 'nullable|string',
         ]);
 
@@ -147,6 +155,9 @@ class InventoryMovementController extends Controller
                 'new_stock' => $newStock,
                 'reference_no' => $validated['reference_no'] ?? null,
                 'warehouse' => $validated['warehouse'] ?? $item->warehouse,
+                'work_site_id' => $validated['work_site_id'] ?? null,
+                'used_for' => $validated['used_for'] ?? $item->usage_purpose,
+                'issued_to' => $validated['issued_to'] ?? null,
                 'note' => $validated['note'] ?? null,
             ]);
         });

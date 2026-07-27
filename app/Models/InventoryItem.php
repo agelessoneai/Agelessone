@@ -44,6 +44,10 @@ class InventoryItem extends Model
 
         'description',
 
+        'usage_purpose',
+
+        'inventory_type',
+
         'active'
 
     ];
@@ -57,6 +61,11 @@ class InventoryItem extends Model
         'selling_price'=>'decimal:2'
 
     ];
+
+    public function movements()
+    {
+        return $this->hasMany(InventoryMovement::class);
+    }
 
     public function category()
     {

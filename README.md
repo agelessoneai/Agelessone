@@ -75,3 +75,21 @@ php artisan serve
 - User dashboard
 - Admin can view registered users
 - MySQL database ready
+
+## Office Staff and Site Workers update (2026-07-21)
+
+- Office staff are managed at **Admin > Office Staff** and stored in `users`.
+- Office attendance remains the attendance shown in the HR & Staff menu.
+- Site workers are managed only inside **Work Sites > View Site > Manage Site Workers**.
+- Site worker roles: Worker, Helper, Supervisor, Security.
+- Office staff roles: Administrator, Project Manager, Project Head, Site Supervisor, Supervisor, Security, Office Staff.
+
+After replacing an existing installation, run:
+
+```bash
+php artisan migrate
+php artisan optimize:clear
+php artisan storage:link
+```
+
+For `php artisan view:cache`, PHP DOM/XML must be enabled (`php-xml`).

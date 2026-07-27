@@ -25,7 +25,8 @@ class InventoryItemController extends Controller
                     ->orWhere('model', 'like', "%{$search}%")
                     ->orWhere('barcode', 'like', "%{$search}%")
                     ->orWhere('warehouse', 'like', "%{$search}%")
-                    ->orWhere('rack', 'like', "%{$search}%");
+                    ->orWhere('rack', 'like', "%{$search}%")
+                    ->orWhere('usage_purpose', 'like', "%{$search}%");
             });
         }
 
@@ -82,6 +83,17 @@ class InventoryItemController extends Controller
         ));
     }
 
+
+    public function show(InventoryItem $inventoryItem)
+    {
+        $inventoryItem->load([
+            'category',
+            'movements' => fn ($query) => $query->with(['user', 'workSite'])->latest(),
+        ]);
+
+        return view('admin.inventory_items.show', compact('inventoryItem'));
+    }
+
     public function create()
     {
         $categories = InventoryCategory::where('active', true)
@@ -112,6 +124,7 @@ class InventoryItemController extends Controller
             'supplier' => 'nullable|string|max:255',
             'image' => 'nullable|image|max:4096',
             'description' => 'nullable|string',
+            'usage_purpose' => 'nullable|string',
             'active' => 'nullable|boolean',
         ]);
 
@@ -171,6 +184,7 @@ class InventoryItemController extends Controller
             'supplier' => 'nullable|string|max:255',
             'image' => 'nullable|image|max:4096',
             'description' => 'nullable|string',
+            'usage_purpose' => 'nullable|string',
             'active' => 'nullable|boolean',
         ]);
 

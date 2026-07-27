@@ -8,6 +8,7 @@ use App\Models\ComplaintTicket;
 use App\Models\TicketUpdate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class ComplaintTicketController extends Controller
 {
@@ -36,7 +37,11 @@ class ComplaintTicketController extends Controller
     public function create()
     {
         $parks = Park::latest()->get();
-        $staff = User::where('role', 'user')->latest()->get();
+        $staff = User::query()
+            ->whereIn('role', ['office_staff', 'project_manager', 'project_head', 'project_coordinator', 'site_manager', 'supervisor'])
+            ->where('status', 'active')
+            ->orderBy('name')
+            ->get();
 
         return view('admin.tickets.create', compact('parks', 'staff'));
     }
@@ -48,7 +53,13 @@ class ComplaintTicketController extends Controller
     {
         $request->validate([
             'park_id' => 'required|exists:parks,id',
-            'assigned_to' => 'required|exists:users,id',
+            'assigned_to' => [
+                'required',
+                Rule::exists('users', 'id')->where(function ($query) {
+                    $query->whereIn('role', ['office_staff', 'project_manager', 'project_head', 'project_coordinator', 'site_manager', 'supervisor'])
+                        ->where('status', 'active');
+                }),
+            ],
             'item_name' => 'required|string|max:255',
             'complaint_title' => 'required|string|max:255',
             'complaint_description' => 'nullable|string',

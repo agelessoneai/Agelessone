@@ -1,5 +1,4 @@
-@extends('layouts.app')
-
+@extends('layouts.admin')
 @section('content')
 
 <style>
@@ -40,63 +39,7 @@ body{background:#0e1320;color:#e8edf6;overflow:hidden;font-family:'Segoe UI',sys
 .photo{width:220px;border-radius:12px;margin-top:10px;border:1px solid #262f47}
 </style>
 
-<div class="app">
-
-    <aside class="side">
-        <div class="brand">
-            <div class="logo">A1</div>
-            <div>
-                <h1>Ageless One</h1>
-                <p>AI BUSINESS SUITE · v1.1
-
-</p>
-            </div>
-        </div>
-
-        <div class="nav-title">OVERVIEW</div>
-        <div class="nav">
-            <a href="{{ route('admin.dashboard') }}">🏠 Executive Dashboard</a>
-        </div>
-
-        <div class="nav-title">SERVICE MANAGEMENT</div>
-        <div class="nav">
-            <a href="{{ route('admin.parks') }}">🏢 Parks / Clients</a>
-            <a href="{{ route('admin.parks.create') }}">➕ Add Park</a>
-            <a class="active" href="{{ route('admin.tickets') }}">🎫 Complaint Tickets</a>
-            <a href="{{ route('admin.tickets.create') }}">➕ Create Ticket</a>
-        </div>
-
-        <div class="nav-title">ADMIN</div>
-        <div class="nav">
-            <a href="{{ route('admin.attendance') }}">🕒 Attendance</a>
-            <a href="{{ route('admin.users') }}">👥 Users</a>
-            <a href="#">⚙ Settings</a>
-        </div>
-    </aside>
-
-    <main class="main">
-
-        <div class="top">
-            <input class="search" placeholder="Search ticket details...">
-
-            <div class="user">
-                <div class="avatar">{{ strtoupper(substr(Auth::user()->name,0,1)) }}</div>
-
-                <div>
-                    <strong>{{ Auth::user()->name }}</strong><br>
-                    <small class="muted">Administrator</small>
-                </div>
-
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="logout">Logout</button>
-                </form>
-            </div>
-        </div>
-
-        <div class="content">
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h2>{{ $ticket->ticket_no }}</h2>
                     <p class="muted mb-0">Complaint ticket details and engineer updates</p>
@@ -236,17 +179,7 @@ body{background:#0e1320;color:#e8edf6;overflow:hidden;font-family:'Segoe UI',sys
     </div>
 
 </div>
-
-        </div>
-
-    </main>
-
-</div>
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
-
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 <script>
 let map = L.map('map').setView([10.0159, 76.3419], 13);
 
@@ -280,5 +213,6 @@ function loadEngineerLocation(){
 loadEngineerLocation();
 setInterval(loadEngineerLocation, 5000);
 </script>
+
 
 @endsection

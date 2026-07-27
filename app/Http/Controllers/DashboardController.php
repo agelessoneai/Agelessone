@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Attendance;
+use App\Models\AdminNotification;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -11,8 +13,16 @@ class DashboardController extends Controller
     public function admin(): View
     {
         return view('admin.dashboard', [
-            'usersCount' => User::count()
+            'usersCount' => User::count(),
+            'adminNotifications' => AdminNotification::with(['user', 'attendance'])->latest()->limit(10)->get(),
+            'unreadAdminNotifications' => AdminNotification::whereNull('read_at')->count(),
         ]);
+    }
+
+    public function markNotificationRead(AdminNotification $notification): RedirectResponse
+    {
+        $notification->update(['read_at' => now()]);
+        return back()->with('success', 'Notification marked as read.');
     }
 
     public function users(): View

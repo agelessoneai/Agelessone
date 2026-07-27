@@ -1,0 +1,25 @@
+AGELESS ONE STABLE UPDATE
+=========================
+
+Included:
+- Office Inventory: Admin + Inventory Manager
+- Worksite Inventory: accessible from each Work Site detail page
+- Restored Worksite Inventory Issue Item routes and stock-out workflow
+- Single Workshop dashboard: Admin + Workshop Manager
+- Workshop Manager mobile-first UI retained
+- Staff Expense submission at /my-expenses
+- Project/Worksite selection, purpose, amount, description, bill/photo/PDF upload
+- Accounts/Admin Expense review at /accounts/expenses
+- Pending -> Approved/Rejected workflow with review notes
+- Accounts role and login redirect
+- Staff dashboard Expense shortcut
+
+Install/update commands:
+composer install
+php artisan migrate
+php artisan storage:link
+php artisan optimize:clear
+
+Notes:
+- The uploaded project did not include vendor/, so Laravel route boot testing was not possible here.
+- All application PHP files passed php -l syntax validation.

@@ -272,6 +272,12 @@
             </div>
 
             <div class="field full-width">
+                <label class="form-label">Used For / Purpose</label>
+                <textarea name="usage_purpose" class="form-control" rows="3" placeholder="Example: Used for monorail cabin fabrication, electrical installation, site safety, maintenance...">{{ old('usage_purpose', $inventoryItem->usage_purpose ?? '') }}</textarea>
+                <small class="muted">Explain where and why this item is normally used.</small>
+            </div>
+
+            <div class="field full-width">
                 <label class="form-label">Description</label>
 
                 <textarea
