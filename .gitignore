@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /vendor
 /node_modules
 .env
@@ -6,4 +7,14 @@
 /storage/logs/*
 .phpunit.result.cache
 .idea
+=======
+/vendor
+/node_modules
+.env
+/public/storage
+/storage/*.key
+/storage/logs/*
+.phpunit.result.cache
+.idea
+>>>>>>> 353115acd2f12e033eed9c0c3cba0304f0b467b5
 .vscode
