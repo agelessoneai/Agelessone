@@ -1,15 +1,5 @@
 # Ageless Admin Panel - Laravel + MySQL
 
-## Login Details
-
-Admin login:
-- Email: admin@ageless.com
-- Password: password123
-
-User login:
-- Email: user@ageless.com
-- Password: password123
-
 ## MySQL Setup Option 1: Laravel Migration
 
 ```bash
