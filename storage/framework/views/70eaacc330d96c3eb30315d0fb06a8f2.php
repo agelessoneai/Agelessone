@@ -138,4 +138,8 @@ body{background:#0e1320;color:#e8edf6;overflow:hidden}
             </div>
 
 <?php $__env->stopSection(); ?>
+<<<<<<< Updated upstream:storage/framework/views/70eaacc330d96c3eb30315d0fb06a8f2.php
 <?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\ageless-admin-panel\resources\views\admin\tickets\index.blade.php ENDPATH**/ ?>
+=======
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\ageless-admin-panel\resources\views/admin/tickets/index.blade.php ENDPATH**/ ?>
+>>>>>>> Stashed changes:storage/framework/views/b8996bea4b0eed2a75aebc121d4a0b0c.php

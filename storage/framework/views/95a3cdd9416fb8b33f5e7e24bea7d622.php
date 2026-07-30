@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('title', $workSite->site_name); ?>
 <?php $__env->startSection('content'); ?>
 <style>

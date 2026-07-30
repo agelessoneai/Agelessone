@@ -219,4 +219,8 @@ setInterval(loadEngineerLocation, 5000);
 
 
 <?php $__env->stopSection(); ?>
+<<<<<<< Updated upstream:storage/framework/views/09e7db82260c8be10b9f571e13c8e62a.php
 <?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\ageless-admin-panel\resources\views\admin\tickets\show.blade.php ENDPATH**/ ?>
+=======
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\ageless-admin-panel\resources\views/admin/tickets/show.blade.php ENDPATH**/ ?>
+>>>>>>> Stashed changes:storage/framework/views/0fb02f20da77f260b165fcfb6c10614f.php

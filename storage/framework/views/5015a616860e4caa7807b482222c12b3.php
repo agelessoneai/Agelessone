@@ -64,4 +64,8 @@
 </div>
 <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
+<<<<<<< Updated upstream:storage/framework/views/5015a616860e4caa7807b482222c12b3.php
 </html><?php /**PATH C:\xampp\htdocs\ageless-admin-panel\resources\views\layouts\sales.blade.php ENDPATH**/ ?>
+=======
+</html><?php /**PATH C:\xampp\htdocs\ageless-admin-panel\resources\views/layouts/sales.blade.php ENDPATH**/ ?>
+>>>>>>> Stashed changes:storage/framework/views/e0ce5476f7906184a6b3b09515d96e18.php
