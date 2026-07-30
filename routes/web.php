@@ -123,7 +123,7 @@ Route::middleware('auth')->group(function () {
 
     });
 
-    Route::middleware('role:office_staff,project_manager,project_head,project_coordinator,site_manager,supervisor')->group(function () {
+    Route::middleware('role:office_staff,project_manager,project_head,project_coordinator,site_manager,site_supervisor,supervisor,security')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'user'])
         ->name('user.dashboard');
@@ -404,6 +404,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::put('/admin/work-sites/{workSite}', [WorkSiteController::class, 'update'])
         ->name('admin.work-sites.update');
+
+    Route::put('/admin/work-sites/{workSite}/team', [WorkSiteController::class, 'updateTeamMember'])
+        ->name('admin.work-sites.team.update');
+
+    Route::post('/admin/work-sites/{workSite}/tickets', [WorkSiteController::class, 'storeTicket'])
+        ->name('admin.work-sites.tickets.store');
 
     Route::delete('/admin/work-sites/{workSite}', [WorkSiteController::class, 'destroy'])
         ->name('admin.work-sites.destroy');
