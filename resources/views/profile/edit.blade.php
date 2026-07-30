@@ -18,7 +18,7 @@
             @if($user->photo)
                 <img class="profile-photo" src="{{ asset('storage/'.$user->photo) }}" alt="{{ $user->display_name }}">
             @else
-                <div class="profile-placeholder">{{ strtoupper(substr($user->display_name, 0, 1)) }}</div>
+                <!-- <div class="profile-placeholder">{{ strtoupper(substr($user->display_name, 0, 1)) }}</div> -->
             @endif
             <h4 class="mt-3 mb-1">{{ $user->display_name }}</h4>
             <div class="text-secondary mb-3">{{ $user->email }}</div>

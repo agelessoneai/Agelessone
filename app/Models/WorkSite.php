@@ -93,4 +93,9 @@ class WorkSite extends Model
             'work_site_id'
         );
     }
+
+    public function tickets(): HasMany
+    {
+        return $this->hasMany(SiteTicket::class);
+    }
 }

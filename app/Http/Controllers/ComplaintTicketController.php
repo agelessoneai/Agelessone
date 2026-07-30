@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Park;
 use App\Models\User;
 use App\Models\ComplaintTicket;
+use App\Models\SiteTicket;
 use App\Models\TicketUpdate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -98,8 +99,13 @@ class ComplaintTicketController extends Controller
         }
 
         $tickets = $query->latest()->get();
+        $siteTickets = SiteTicket::with(['site', 'zone'])
+            ->where('assigned_to', Auth::id())
+            ->when($request->status, fn ($siteQuery, $status) => $siteQuery->where('status', $status))
+            ->latest()
+            ->get();
 
-        return view('user.tickets.index', compact('tickets'));
+        return view('user.tickets.index', compact('tickets', 'siteTickets'));
     }
 
     // ==========================

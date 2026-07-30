@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\WorkSite;
+use App\Models\SiteTicket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WorkSiteController extends Controller
 {
@@ -50,11 +52,63 @@ class WorkSiteController extends Controller
             ->whereIn('type', ['stock_out', 'adjustment'])
             ->sortByDesc('created_at');
 
+        $teamMembers = User::query()
+            ->where(function ($query) {
+                $query->where('status', 'active')->orWhereNull('status');
+            })
+            ->whereIn('role', ['project_manager', 'project_head', 'project_coordinator', 'site_manager', 'site_supervisor', 'supervisor', 'security'])
+            ->orderBy('name')
+            ->get();
+
         return view('admin.work_sites.show', compact(
             'workSite', 'allWorkerAssignments', 'totalWorkers', 'siteProgress', 'siteInventory',
             'securityAttendance', 'supervisorAttendance', 'pendingAttendanceCount', 'activeWorkerAttendances',
-            'approvedWorkerAttendances', 'pendingWorkerAttendances', 'siteVisitors'
+            'approvedWorkerAttendances', 'pendingWorkerAttendances', 'siteVisitors', 'teamMembers'
         ));
+    }
+
+    /** Update one of the five assignments from the site team popup. */
+    public function updateTeamMember(Request $request, WorkSite $workSite)
+    {
+        $positions = [
+            'project_manager_id' => 'Project Manager',
+            'project_coordinator_id' => 'Project Coordinator',
+            'site_manager_id' => 'Site Manager',
+            'site_supervisor_id' => 'Site Supervisor',
+            'site_security_id' => 'Security',
+        ];
+
+        $validated = $request->validate([
+            'position' => ['required', 'in:' . implode(',', array_keys($positions))],
+            'user_id' => 'nullable|exists:users,id',
+        ]);
+
+        $workSite->update([$validated['position'] => $validated['user_id']]);
+
+        return back()->with('success', $positions[$validated['position']] . ' updated successfully.');
+    }
+
+    /** Save a ticket that belongs to this work site and, optionally, a site zone. */
+    public function storeTicket(Request $request, WorkSite $workSite)
+    {
+        $validated = $request->validate([
+            'site_zone_id' => ['nullable', 'exists:site_zones,id'],
+            'assigned_to' => ['nullable', 'exists:users,id'],
+            'work' => 'required|string|max:255',
+            'note' => 'nullable|string|max:2000',
+        ]);
+
+        if (! empty($validated['site_zone_id']) && ! $workSite->zones()->whereKey($validated['site_zone_id'])->exists()) {
+            return back()->withErrors(['site_zone_id' => 'Please select a zone from this site.'])->withInput();
+        }
+
+        SiteTicket::create([
+            ...$validated,
+            'work_site_id' => $workSite->id,
+            'created_by' => Auth::id(),
+        ]);
+
+        return back()->with('success', 'Site ticket assigned successfully.');
     }
 
     public function inventory(WorkSite $workSite)

@@ -226,6 +226,45 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
         </div>
     @endforelse
 
+    @if($siteTickets->isNotEmpty())
+        <div class="title" style="font-size:19px;margin-top:26px">Site Tickets</div>
+        <div class="sub">Work assigned to you from a work site</div>
+
+        @foreach($siteTickets as $siteTicket)
+            <div class="ticket-card">
+                <div class="ticket-top">
+                    <div>
+                        <div class="ticket-no">Site ticket #{{ $siteTicket->id }}</div>
+                        <div class="date">{{ $siteTicket->created_at->format('d M Y h:i A') }}</div>
+                    </div>
+                    <span class="badge status">{{ ucfirst($siteTicket->status) }}</span>
+                </div>
+
+                <div class="info">
+                    <span>Site</span>
+                    <b>{{ $siteTicket->site?->site_name ?? 'Site unavailable' }}</b>
+                </div>
+
+                <div class="info">
+                    <span>Zone</span>
+                    <b>{{ $siteTicket->zone?->zone_name ?? 'Not specified' }}</b>
+                </div>
+
+                <div class="info">
+                    <span>Work required</span>
+                    <b>{{ $siteTicket->work }}</b>
+                </div>
+
+                @if($siteTicket->note)
+                    <div class="info">
+                        <span>Note</span>
+                        <b>{{ $siteTicket->note }}</b>
+                    </div>
+                @endif
+            </div>
+        @endforeach
+    @endif
+
 </div>
 
 <div class="bottom-nav">

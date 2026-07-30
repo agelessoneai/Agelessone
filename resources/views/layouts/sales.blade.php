@@ -46,7 +46,11 @@
         <header class="topbar">
             <div class="topbar-title">@yield('page-title', 'Sales')</div>
             <div class="topbar-user">
-                @if(auth()->user()->photo)<img class="avatar" style="object-fit:cover" src="{{ asset('storage/'.auth()->user()->photo) }}" alt="Profile">@else@if(auth()->user()->photo)<img class="avatar" style="object-fit:cover" src="{{ asset('storage/'.auth()->user()->photo) }}" alt="Profile">@else<div class="avatar">{{ strtoupper(substr(auth()->user()->name ?? 'S', 0, 1)) }}</div>@endif@endif
+                @if(auth()->user()->photo)
+                    <img class="avatar" style="object-fit:cover" src="{{ asset('storage/'.auth()->user()->photo) }}" alt="Profile">
+                @else
+                    <div class="avatar">{{ strtoupper(substr(auth()->user()->name ?? 'S', 0, 1)) }}</div>
+                @endif
                 <div><strong>{{ auth()->user()->name ?? 'Sales User' }}</strong><br><small class="muted">{{ ucfirst(str_replace('_',' ',auth()->user()->role ?? 'sales')) }}</small></div>
                 <form method="POST" action="{{ route('logout') }}">@csrf<button class="logout" type="submit">Logout</button></form>
             </div>
