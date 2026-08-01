@@ -30,9 +30,9 @@ class AttendanceController extends Controller
 
     public function punchIn(Request $request)
     {
-        $requiresPhoto = in_array($request->user()->role, ['security', 'site_supervisor'], true);
+        // Photo is mandatory for all users on punch-in
         $request->validate([
-            'photo' => [$requiresPhoto ? 'required' : 'nullable', 'file', 'max:12288', 'mimetypes:image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,image/heic-sequence,image/heif-sequence'],
+            'photo' => ['required', 'file', 'max:12288', 'mimetypes:image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,image/heic-sequence,image/heif-sequence'],
             'location' => ['nullable', 'string', 'max:255'],
         ]);
 
@@ -68,9 +68,9 @@ class AttendanceController extends Controller
 
     public function punchOut(Request $request)
     {
-        $requiresPhoto = in_array($request->user()->role, ['security', 'site_supervisor'], true);
+        // Photo is optional for all users on punch-out
         $request->validate([
-            'photo' => [$requiresPhoto ? 'required' : 'nullable', 'file', 'max:12288', 'mimetypes:image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,image/heic-sequence,image/heif-sequence'],
+            'photo' => ['nullable', 'file', 'max:12288', 'mimetypes:image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,image/heic-sequence,image/heif-sequence'],
             'location' => ['nullable', 'string', 'max:255'],
         ]);
 

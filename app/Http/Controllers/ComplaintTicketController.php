@@ -305,4 +305,28 @@ public function liveLocation(ComplaintTicket $ticket)
             abort(403);
         }
     }
+
+    // =====================================
+    // USER - Accept Site Ticket
+    // =====================================
+    public function acceptSiteTicket(SiteTicket $siteTicket)
+    {
+        if ($siteTicket->assigned_to != Auth::id()) {
+            abort(403);
+        }
+        $siteTicket->update(['status' => 'accepted']);
+        return back()->with('success', 'Site ticket accepted.');
+    }
+
+    // =====================================
+    // USER - Reject Site Ticket
+    // =====================================
+    public function rejectSiteTicket(SiteTicket $siteTicket)
+    {
+        if ($siteTicket->assigned_to != Auth::id()) {
+            abort(403);
+        }
+        $siteTicket->update(['status' => 'rejected']);
+        return back()->with('success', 'Site ticket rejected.');
+    }
 }

@@ -1,5 +1,4 @@
-@extends('layouts.app')
-@section('content')
+<?php $__env->startSection('content'); ?>
 <style>
 :root{
     --bg:#0e1320;
@@ -130,80 +129,84 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
     <div class="left-panel">
         <div class="app-head">
             <div class="profile">
-                <div class="avatar">{{ strtoupper(substr(auth()->user()->display_name ?? 'S', 0, 1)) }}</div>
+                <div class="avatar"><?php echo e(strtoupper(substr(auth()->user()->display_name ?? 'S', 0, 1))); ?></div>
                 <div>
-                    <h3>{{ auth()->user()->display_name }}</h3>
+                    <h3><?php echo e(auth()->user()->display_name); ?></h3>
                     <p>SECURITY PORTAL</p>
                 </div>
             </div>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
+            <form method="POST" action="<?php echo e(route('logout')); ?>">
+                <?php echo csrf_field(); ?>
                 <button class="logout">Logout</button>
             </form>
         </div>
 
-        @if(session('success'))
+        <?php if(session('success')): ?>
             <div class="alert alert-success" style="background:rgba(55,194,129,.12);border:1px solid rgba(55,194,129,.3);color:#c9ffe2;border-radius:16px;padding:12px;margin-bottom:15px;font-size:13px;">
-                {{ session('success') }}
-            </div>
-        @endif
+                <?php echo e(session('success')); ?>
 
-        @if($errors->any())
-            <div class="alert alert-danger" style="background:rgba(255,90,110,.12);border:1px solid rgba(255,90,110,.3);color:#ffc9d0;border-radius:16px;padding:12px;margin-bottom:15px;font-size:13px;">
-                {{ $errors->first() }}
             </div>
-        @endif
+        <?php endif; ?>
+
+        <?php if($errors->any()): ?>
+            <div class="alert alert-danger" style="background:rgba(255,90,110,.12);border:1px solid rgba(255,90,110,.3);color:#ffc9d0;border-radius:16px;padding:12px;margin-bottom:15px;font-size:13px;">
+                <?php echo e($errors->first()); ?>
+
+            </div>
+        <?php endif; ?>
 
         <!-- Assigned Site Banner -->
         <div class="panel site-banner">
             <div class="muted">ASSIGNED SITE</div>
-            <h3>{{ $site->site_name }}</h3>
-            <div style="font-size:13px;color:rgba(255,255,255,0.9);">{{ $site->location ?: 'Location not added' }}</div>
+            <h3><?php echo e($site->site_name); ?></h3>
+            <div style="font-size:13px;color:rgba(255,255,255,0.9);"><?php echo e($site->location ?: 'Location not added'); ?></div>
         </div>
 
         <!-- Security Attendance Panel -->
         <div class="panel">
             <div class="row-between">
                 <h5 class="m-0" style="font-size:16px;font-weight:700;">My Attendance</h5>
-                <span class="badge-app {{ !$attendance?'pending':(!$attendance->punch_out?'inside':'done') }}">
-                    {{ !$attendance?'Not punched':(!$attendance->punch_out?'Inside':'Completed') }}
+                <span class="badge-app <?php echo e(!$attendance?'pending':(!$attendance->punch_out?'inside':'done')); ?>">
+                    <?php echo e(!$attendance?'Not punched':(!$attendance->punch_out?'Inside':'Completed')); ?>
+
                 </span>
             </div>
 
-            @if(!$attendance)
-                <form method="POST" action="{{ route('attendance.punchin') }}" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="location" value="{{ $site->site_name }}">
+            <?php if(!$attendance): ?>
+                <form method="POST" action="<?php echo e(route('attendance.punchin')); ?>" enctype="multipart/form-data">
+                    <?php echo csrf_field(); ?>
+                    <input type="hidden" name="location" value="<?php echo e($site->site_name); ?>">
                     <input class="camera mobile-photo" type="file" name="photo" accept="image/*,.heic,.heif" capture="user" required>
                     <button class="btn-app btn-in">📷 Photo + Punch In</button>
                 </form>
-            @elseif(!$attendance->punch_out)
-                <p class="muted mt-3">Punched in {{ $attendance->punch_in->format('h:i A') }}</p>
-                <form method="POST" action="{{ route('attendance.punchout') }}" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="location" value="{{ $site->site_name }}">
+            <?php elseif(!$attendance->punch_out): ?>
+                <p class="muted mt-3">Punched in <?php echo e($attendance->punch_in->format('h:i A')); ?></p>
+                <form method="POST" action="<?php echo e(route('attendance.punchout')); ?>" enctype="multipart/form-data">
+                    <?php echo csrf_field(); ?>
+                    <input type="hidden" name="location" value="<?php echo e($site->site_name); ?>">
                     <input class="camera mobile-photo" type="file" name="photo" accept="image/*,.heic,.heif" capture="user" required>
                     <button class="btn-app btn-out">📷 Photo + Punch Out</button>
                 </form>
-            @else
+            <?php else: ?>
                 <div class="mt-3" style="font-size:14px;font-weight:600;color:var(--green);">
-                    Punched: {{ $attendance->punch_in->format('h:i A') }} — {{ $attendance->punch_out->format('h:i A') }}
+                    Punched: <?php echo e($attendance->punch_in->format('h:i A')); ?> — <?php echo e($attendance->punch_out->format('h:i A')); ?>
+
                 </div>
-            @endif
+            <?php endif; ?>
         </div>
 
         <!-- Overview Stats -->
         <div class="stats mb-3">
             <div class="stat">
-                <b>{{ $workers->count() }}</b>
+                <b><?php echo e($workers->count()); ?></b>
                 <span class="muted">Workers</span>
             </div>
             <div class="stat">
-                <b>{{ $workerAttendances->whereNull('punch_out')->count() }}</b>
+                <b><?php echo e($workerAttendances->whereNull('punch_out')->count()); ?></b>
                 <span class="muted">Inside</span>
             </div>
             <div class="stat">
-                <b>{{ $visitors->whereNull('check_out_at')->count() }}</b>
+                <b><?php echo e($visitors->whereNull('check_out_at')->count()); ?></b>
                 <span class="muted">Visitors</span>
             </div>
         </div>
@@ -217,8 +220,8 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
         <div class="panel" id="visitors">
             <h5 style="font-size:17px;font-weight:700;margin-bottom:4px;">Visitor Check-in</h5>
             <p class="muted" style="margin-bottom:14px;">Photo, name and phone number only.</p>
-            <form method="POST" action="{{ route('security.visitors.store') }}" enctype="multipart/form-data">
-                @csrf
+            <form method="POST" action="<?php echo e(route('security.visitors.store')); ?>" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
                 <div class="row g-2">
                     <div class="col-12 col-md-6 mb-2">
                         <input class="form-control" name="name" placeholder="Visitor name" required>
@@ -232,29 +235,29 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
             </form>
 
             <div class="mt-3">
-                @forelse($visitors as $visitor)
+                <?php $__empty_1 = true; $__currentLoopData = $visitors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $visitor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <div class="worker">
                         <div class="row-between">
                             <div class="d-flex align-items-center gap-2">
-                                <img class="photo" src="{{ asset('storage/'.$visitor->photo) }}">
+                                <img class="photo" src="<?php echo e(asset('storage/'.$visitor->photo)); ?>">
                                 <div>
-                                    <strong>{{ $visitor->name }}</strong>
-                                    <div class="muted">{{ $visitor->mobile }} · {{ $visitor->check_in_at?->format('h:i A') }}</div>
+                                    <strong><?php echo e($visitor->name); ?></strong>
+                                    <div class="muted"><?php echo e($visitor->mobile); ?> · <?php echo e($visitor->check_in_at?->format('h:i A')); ?></div>
                                 </div>
                             </div>
-                            @if(!$visitor->check_out_at)
-                                <form method="POST" action="{{ route('security.visitors.checkout',$visitor) }}">
-                                    @csrf
+                            <?php if(!$visitor->check_out_at): ?>
+                                <form method="POST" action="<?php echo e(route('security.visitors.checkout',$visitor)); ?>">
+                                    <?php echo csrf_field(); ?>
                                     <button class="btn btn-sm btn-outline-light" style="border-radius:12px;padding:6px 14px;font-size:12px;">Check Out</button>
                                 </form>
-                            @else
+                            <?php else: ?>
                                 <span class="badge-app done">Out</span>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
-                @empty
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <p class="muted mb-0 mt-2">No visitors today.</p>
-                @endforelse
+                <?php endif; ?>
             </div>
         </div>
 
@@ -262,12 +265,12 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
         <div class="panel" id="add-worker">
             <div class="row-between">
                 <h5 class="m-0" style="font-size:17px;font-weight:700;">Add Worker</h5>
-                <span class="muted">{{ $site->site_name }}</span>
+                <span class="muted"><?php echo e($site->site_name); ?></span>
             </div>
             <p class="muted mt-2" style="margin-bottom:14px;">Name and photo only. Worker code is created automatically.</p>
-            <form method="POST" action="{{ route('security.workers.store') }}" enctype="multipart/form-data">
-                @csrf
-                <input class="form-control mb-2" name="name" value="{{ old('name') }}" placeholder="Worker name" required>
+            <form method="POST" action="<?php echo e(route('security.workers.store')); ?>" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
+                <input class="form-control mb-2" name="name" value="<?php echo e(old('name')); ?>" placeholder="Worker name" required>
                 <input class="camera" type="file" name="photo" accept="image/*" capture="environment" required>
                 <button class="btn-app btn-primary">📷 Add Worker</button>
             </form>
@@ -280,42 +283,44 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
                 <span class="muted">Supervisor approval required</span>
             </div>
 
-            @forelse($workers as $worker)
-                @php($record=$workerAttendances->get($worker->id))
+            <?php $__empty_1 = true; $__currentLoopData = $workers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $worker): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                <?php ($record=$workerAttendances->get($worker->id)); ?>
                 <div class="worker">
                     <div class="row-between">
                         <div class="d-flex align-items-center gap-2">
-                            @if($worker->photo)
-                                <img class="photo" src="{{ asset('storage/'.$worker->photo) }}">
-                            @endif
+                            <?php if($worker->photo): ?>
+                                <img class="photo" src="<?php echo e(asset('storage/'.$worker->photo)); ?>">
+                            <?php endif; ?>
                             <div>
-                                <strong>{{ $worker->name }}</strong>
-                                <div class="muted">{{ $worker->worker_code }}</div>
+                                <strong><?php echo e($worker->name); ?></strong>
+                                <div class="muted"><?php echo e($worker->worker_code); ?></div>
                             </div>
                         </div>
-                        <span class="badge-app {{ !$record?'pending':(!$record->punch_out?'inside':'done') }}">
-                            {{ !$record?'Not marked':(!$record->punch_out?'Inside':ucfirst($record->status)) }}
+                        <span class="badge-app <?php echo e(!$record?'pending':(!$record->punch_out?'inside':'done')); ?>">
+                            <?php echo e(!$record?'Not marked':(!$record->punch_out?'Inside':ucfirst($record->status))); ?>
+
                         </span>
                     </div>
-                    @if(!$record)
-                        <form method="POST" action="{{ route('security.workers.punch-in',$worker) }}">
-                            @csrf
+                    <?php if(!$record): ?>
+                        <form method="POST" action="<?php echo e(route('security.workers.punch-in',$worker)); ?>">
+                            <?php echo csrf_field(); ?>
                             <button class="btn-app btn-in mt-2">Punch In</button>
                         </form>
-                    @elseif(!$record->punch_out)
-                        <form method="POST" action="{{ route('security.workers.punch-out',$worker) }}">
-                            @csrf
+                    <?php elseif(!$record->punch_out): ?>
+                        <form method="POST" action="<?php echo e(route('security.workers.punch-out',$worker)); ?>">
+                            <?php echo csrf_field(); ?>
                             <button class="btn-app btn-out mt-2">Punch Out</button>
                         </form>
-                    @else
+                    <?php else: ?>
                         <div class="muted mt-2">
-                            {{ $record->punch_in }} — {{ $record->punch_out }} · {{ number_format(($record->working_minutes ?? 0)/60,2) }} hrs · {{ $record->work_description }} · {{ ucfirst($record->status) }}
+                            <?php echo e($record->punch_in); ?> — <?php echo e($record->punch_out); ?> · <?php echo e(number_format(($record->working_minutes ?? 0)/60,2)); ?> hrs · <?php echo e($record->work_description); ?> · <?php echo e(ucfirst($record->status)); ?>
+
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
-            @empty
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                 <p class="muted mt-3">No active workers assigned.</p>
-            @endforelse
+            <?php endif; ?>
         </div>
 
         <!-- Site Inventory Shortcut -->
@@ -325,17 +330,17 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
                     <h5 class="m-0" style="font-size:17px;font-weight:700;">Site Inventory</h5>
                     <div class="muted mt-1">Add tools and mark who is using them.</div>
                 </div>
-                <a class="btn-app btn-primary" style="width:auto;padding:10px 20px;text-decoration:none;" href="{{ route('security.inventory') }}">Open Inventory</a>
+                <a class="btn-app btn-primary" style="width:auto;padding:10px 20px;text-decoration:none;" href="<?php echo e(route('security.inventory')); ?>">Open Inventory</a>
             </div>
         </div>
     </div>
 </div>
 
 <div class="bottom-nav">
-    <a href="{{ route('security.dashboard') }}" class="active"><i>🏠</i>Home</a>
-    <a href="{{ route('security.inventory') }}"><i>📦</i>Inventory</a>
+    <a href="<?php echo e(route('security.dashboard')); ?>" class="active"><i>🏠</i>Home</a>
+    <a href="<?php echo e(route('security.inventory')); ?>"><i>📦</i>Inventory</a>
     <a href="#workers"><i>⏱</i>Punch</a>
-    <a href="{{ route('security.history') }}"><i>📜</i>History</a>
+    <a href="<?php echo e(route('security.history')); ?>"><i>📜</i>History</a>
 </div>
 
 <script>
@@ -370,4 +375,6 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
     });
 })();
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\Agelessone\resources\views/security/dashboard.blade.php ENDPATH**/ ?>

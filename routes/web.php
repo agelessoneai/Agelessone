@@ -162,6 +162,12 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/tickets/{ticket}/travel/arrived', [ComplaintTicketController::class, 'markArrived'])
         ->name('tickets.travel.arrived');
+
+    Route::post('/site-tickets/{siteTicket}/accept', [ComplaintTicketController::class, 'acceptSiteTicket'])
+        ->name('site.tickets.accept');
+
+    Route::post('/site-tickets/{siteTicket}/reject', [ComplaintTicketController::class, 'rejectSiteTicket'])
+        ->name('site.tickets.reject');
     });
 });
 

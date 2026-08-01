@@ -322,8 +322,8 @@
                 <h2>Welcome Back</h2>
                 <div class="desc">Sign in to continue</div>
 
-                <form method="POST" action="{{ route('login.post') }}">
-                    @csrf
+                <form method="POST" action="<?php echo e(route('login.post')); ?>">
+                    <?php echo csrf_field(); ?>
 
                     <div class="form-group">
                         <label class="form-label" for="login">Email or Phone Number</label>
@@ -331,16 +331,23 @@
                             id="login"
                             type="text"
                             name="login"
-                            value="{{ old('login') }}"
+                            value="<?php echo e(old('login')); ?>"
                             class="form-control"
                             placeholder="Enter your email or phone number"
                             autocomplete="username"
                             required
                             autofocus
                         >
-                        @error('login')
-                            <small class="error-text">{{ $message }}</small>
-                        @enderror
+                        <?php $__errorArgs = ['login'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <small class="error-text"><?php echo e($message); ?></small>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <div class="form-group">
@@ -354,9 +361,16 @@
                             autocomplete="current-password"
                             required
                         >
-                        @error('password')
-                            <small class="error-text">{{ $message }}</small>
-                        @enderror
+                        <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <small class="error-text"><?php echo e($message); ?></small>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                     </div>
 
                     <div class="remember-row">
@@ -365,7 +379,8 @@
                             name="remember"
                             id="remember"
                             value="1"
-                            {{ old('remember') ? 'checked' : '' }}
+                            <?php echo e(old('remember') ? 'checked' : ''); ?>
+
                         >
                         <label for="remember">Remember me</label>
                     </div>
@@ -383,4 +398,4 @@
 
     </div>
 </div>                                                         
-       </html>
+       </html><?php /**PATH C:\xampp\htdocs\Agelessone\resources\views/auth/login.blade.php ENDPATH**/ ?>

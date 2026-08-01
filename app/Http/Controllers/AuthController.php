@@ -12,8 +12,21 @@ class AuthController extends Controller
     public function showRegister(): View { return view('auth.register'); }
     public function login(Request $request): RedirectResponse
     {
-        $credentials = $request->validate(['email' => ['required','email'], 'password' => ['required']]);
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        $credentials = $request->validate([
+            'login' => ['required', 'string'],
+            'password' => ['required'],
+        ]);
+
+        $loginInput = trim($credentials['login']);
+        $password = $credentials['password'];
+        $remember = $request->boolean('remember');
+
+        $fieldType = filter_var($loginInput, FILTER_VALIDATE_EMAIL) ? 'email' : 'mobile';
+
+        if (Auth::attempt([$fieldType => $loginInput, 'password' => $password], $remember) ||
+            Auth::attempt(['email' => $loginInput, 'password' => $password], $remember) ||
+            Auth::attempt(['mobile' => $loginInput, 'password' => $password], $remember)) {
+
             $request->session()->regenerate();
             return match (auth()->user()->role) {
                 'admin' => redirect()->route('admin.dashboard'),
@@ -26,7 +39,8 @@ class AuthController extends Controller
                 default => redirect()->route('user.dashboard'),
             };
         }
-        return back()->withErrors(['email' => 'Invalid email or password.'])->onlyInput('email');
+
+        return back()->withErrors(['login' => 'Invalid email, phone number, or password.'])->onlyInput('login');
     }
     public function register(Request $request): RedirectResponse
     {

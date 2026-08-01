@@ -1,11 +1,11 @@
-@extends('layouts.app')
 
-@section('content')
 
-@php
+<?php $__env->startSection('content'); ?>
+
+<?php
 $user = Auth::user();
 $initials = strtoupper(substr($user->name,0,1));
-@endphp
+?>
 
 <style>
 :root{
@@ -203,15 +203,15 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
     <div class="left-panel">
         <div class="app-header">
             <div class="profile">
-                <div class="avatar">{{ $initials }}</div>
+                <div class="avatar"><?php echo e($initials); ?></div>
                 <div>
-                    <h3>{{ $user->name }}</h3>
+                    <h3><?php echo e($user->name); ?></h3>
                     <p>Staff Member</p>
                 </div>
             </div>
 
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
+            <form method="POST" action="<?php echo e(route('logout')); ?>">
+                <?php echo csrf_field(); ?>
                 <button class="logout">Logout</button>
             </form>
         </div>
@@ -221,26 +221,27 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
             <div class="attendance-head">
                 <h3>Today Attendance</h3>
 
-                @if(!$attendance)
+                <?php if(!$attendance): ?>
                     <span class="status-pill status-out">Not Punched</span>
-                @elseif($attendance && !$attendance->punch_out)
+                <?php elseif($attendance && !$attendance->punch_out): ?>
                     <span class="status-pill status-in">In Office</span>
-                @else
+                <?php else: ?>
                     <span class="status-pill status-done">Completed</span>
-                @endif
+                <?php endif; ?>
             </div>
 
-            @if(session('success'))
+            <?php if(session('success')): ?>
                 <div class="alert-success">
-                    {{ session('success') }}
+                    <?php echo e(session('success')); ?>
+
                 </div>
-            @endif
+            <?php endif; ?>
 
 
-            @if(!$attendance)
+            <?php if(!$attendance): ?>
 
-              <form id="punchInForm" method="POST" action="{{ route('attendance.punchin') }}" enctype="multipart/form-data">
-        @csrf
+              <form id="punchInForm" method="POST" action="<?php echo e(route('attendance.punchin')); ?>" enctype="multipart/form-data">
+        <?php echo csrf_field(); ?>
         <input type="hidden" name="location" id="in_location">
 
         <div class="photo-label">📷 PHOTO VERIFICATION (REQUIRED)</div>
@@ -252,12 +253,12 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
     </button>
     </form>
 
-            @elseif($attendance && !$attendance->punch_out)
+            <?php elseif($attendance && !$attendance->punch_out): ?>
 
                 <div class="time-grid">
                     <div class="time-item">
                         <span>Punch In</span>
-                        <b>{{ \Carbon\Carbon::parse($attendance->punch_in)->format('h:i A') }}</b>
+                        <b><?php echo e(\Carbon\Carbon::parse($attendance->punch_in)->format('h:i A')); ?></b>
                     </div>
 
                     <div class="time-item">
@@ -268,8 +269,8 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
 
                 <br>
 
-             <form id="punchOutForm" method="POST" action="{{ route('attendance.punchout') }}" enctype="multipart/form-data">
-        @csrf
+             <form id="punchOutForm" method="POST" action="<?php echo e(route('attendance.punchout')); ?>" enctype="multipart/form-data">
+        <?php echo csrf_field(); ?>
         <input type="hidden" name="location" id="out_location">
 
         <div class="photo-label">📷 PHOTO VERIFICATION (OPTIONAL)</div>
@@ -281,7 +282,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
     </button>
     </form>
 
-            @else
+            <?php else: ?>
 
                 <div class="done-box">
                     <strong>Attendance Completed</strong>
@@ -289,19 +290,19 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
                     <div class="time-grid">
                         <div class="time-item">
                             <span>Punch In</span>
-                            <b>{{ \Carbon\Carbon::parse($attendance->punch_in)->format('h:i A') }}</b>
+                            <b><?php echo e(\Carbon\Carbon::parse($attendance->punch_in)->format('h:i A')); ?></b>
                         </div>
 
                         <div class="time-item">
                             <span>Punch Out</span>
-                            <b>{{ \Carbon\Carbon::parse($attendance->punch_out)->format('h:i A') }}</b>
+                            <b><?php echo e(\Carbon\Carbon::parse($attendance->punch_out)->format('h:i A')); ?></b>
                         </div>
 
                         <div class="time-item">
                             <span>Total Time</span>
                             <b>
-                                {{ floor($attendance->total_minutes / 60) }}h
-                                {{ $attendance->total_minutes % 60 }}m
+                                <?php echo e(floor($attendance->total_minutes / 60)); ?>h
+                                <?php echo e($attendance->total_minutes % 60); ?>m
                             </b>
                         </div>
 
@@ -312,7 +313,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
                     </div>
                 </div>
 
-            @endif
+            <?php endif; ?>
 
         </div>
     </div>
@@ -321,8 +322,8 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
         <div class="desktop-title">Quick Actions</div>
         <div class="quick-grid">
             <div class="quick-card"><div class="icon">👤</div><h4>My Profile</h4><p>View account details</p></div>
-            <a href="{{ route('staff.tickets') }}" class="quick-card" style="text-decoration:none;color:inherit"><div class="icon">🎫</div><h4>My Tickets</h4><p>View assigned tickets</p></a>
-            <a href="{{ route('expenses.my') }}" class="quick-card" style="text-decoration:none;color:inherit"><div class="icon">🧾</div><h4>My Expenses</h4><p>Add bills and expenses</p></a>
+            <a href="<?php echo e(route('staff.tickets')); ?>" class="quick-card" style="text-decoration:none;color:inherit"><div class="icon">🎫</div><h4>My Tickets</h4><p>View assigned tickets</p></a>
+            <a href="<?php echo e(route('expenses.my')); ?>" class="quick-card" style="text-decoration:none;color:inherit"><div class="icon">🧾</div><h4>My Expenses</h4><p>Add bills and expenses</p></a>
             <div class="quick-card"><div class="icon">✅</div><h4>Status</h4><p>Account active</p></div>
         </div>
     </div>
@@ -346,11 +347,11 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
 
 <div class="bottom-nav">
     <a href="#" class="active"><i>🏠</i>Home</a>
-    <a href="{{ route('staff.tickets') }}"
-       class="{{ request()->routeIs('staff.tickets') ? 'active' : '' }}">
+    <a href="<?php echo e(route('staff.tickets')); ?>"
+       class="<?php echo e(request()->routeIs('staff.tickets') ? 'active' : ''); ?>">
         <i>🎫</i>My Tickets
     </a>
-    <a href="{{ route('expenses.my') }}" class="{{ request()->routeIs('expenses.*') ? 'active' : '' }}"><i>🧾</i>Expenses</a>
+    <a href="<?php echo e(route('expenses.my')); ?>" class="<?php echo e(request()->routeIs('expenses.*') ? 'active' : ''); ?>"><i>🧾</i>Expenses</a>
     <a href="#"><i>👤</i>Profile</a>
 </div>
 
@@ -467,4 +468,5 @@ window.addEventListener("load",function(){
 });
 </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\Agelessone\resources\views/user/dashboard.blade.php ENDPATH**/ ?>

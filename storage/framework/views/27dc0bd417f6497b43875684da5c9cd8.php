@@ -1,11 +1,9 @@
-@extends('layouts.app')
+<?php $__env->startSection('content'); ?>
 
-@section('content')
-
-@php
+<?php
 $user = Auth::user();
 $initials = strtoupper(substr($user->name,0,1));
-@endphp
+?>
 
 <style>
 
@@ -113,101 +111,103 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
     <div class="left-panel">
         <div class="app-header">
             <div class="profile">
-                <div class="avatar">{{ $initials }}</div>
+                <div class="avatar"><?php echo e($initials); ?></div>
                 <div>
-                    <h3>{{ $user->name }}</h3>
+                    <h3><?php echo e($user->name); ?></h3>
                     <p>Staff Service Panel</p>
                 </div>
             </div>
 
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
+            <form method="POST" action="<?php echo e(route('logout')); ?>">
+                <?php echo csrf_field(); ?>
                 <button class="logout">Logout</button>
             </form>
         </div>
 
         <div class="title">My Tickets</div>
 
-        @forelse($tickets as $ticket)
+        <?php $__empty_1 = true; $__currentLoopData = $tickets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ticket): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
 
             <div class="ticket-card">
 
                 <div class="ticket-top">
                     <div>
-                        <div class="ticket-no">{{ $ticket->ticket_no }}</div>
-                        <div class="date">{{ $ticket->created_at->format('d M Y h:i A') }}</div>
+                        <div class="ticket-no"><?php echo e($ticket->ticket_no); ?></div>
+                        <div class="date"><?php echo e($ticket->created_at->format('d M Y h:i A')); ?></div>
                     </div>
 
-                    <span class="badge priority-{{ $ticket->priority }}">
-                        {{ ucfirst($ticket->priority) }}
+                    <span class="badge priority-<?php echo e($ticket->priority); ?>">
+                        <?php echo e(ucfirst($ticket->priority)); ?>
+
                     </span>
                 </div>
 
                 <span class="badge status">
-                    {{ str_replace('_',' ',ucfirst($ticket->status)) }}
+                    <?php echo e(str_replace('_',' ',ucfirst($ticket->status))); ?>
+
                 </span>
 
                 <div class="info">
                     <span>Park</span>
-                    <b>{{ $ticket->park->name }}</b>
+                    <b><?php echo e($ticket->park->name); ?></b>
                 </div>
 
                 <div class="info">
                     <span>Item / Ride</span>
-                    <b>{{ $ticket->item_name }}</b>
+                    <b><?php echo e($ticket->item_name); ?></b>
                 </div>
 
                 <div class="info">
                     <span>Complaint</span>
-                    <b>{{ $ticket->complaint_title }}</b>
+                    <b><?php echo e($ticket->complaint_title); ?></b>
                 </div>
 
-                @if($ticket->complaint_description)
+                <?php if($ticket->complaint_description): ?>
                     <div class="info">
                         <span>Details</span>
-                        <b>{{ $ticket->complaint_description }}</b>
+                        <b><?php echo e($ticket->complaint_description); ?></b>
                     </div>
-                @endif
+                <?php endif; ?>
 
                <div class="actions">
-                @if($ticket->status == 'accepted' && $ticket->travel_status != 'travelling')
-                    <button class="btn-blue" type="button" onclick="startTravel({{ $ticket->id }})">
+                <?php if($ticket->status == 'accepted' && $ticket->travel_status != 'travelling'): ?>
+                    <button class="btn-blue" type="button" onclick="startTravel(<?php echo e($ticket->id); ?>)">
                         🚗 Start Travel
                     </button>
-                @endif
+                <?php endif; ?>
 
-                @if($ticket->travel_status == 'travelling')
-                    <button class="btn-green" type="button" onclick="markArrived({{ $ticket->id }})">
+                <?php if($ticket->travel_status == 'travelling'): ?>
+                    <button class="btn-green" type="button" onclick="markArrived(<?php echo e($ticket->id); ?>)">
                         📍 Mark Arrived
                     </button>
-                @endif
+                <?php endif; ?>
 
-                @if($ticket->status == 'pending')
-                    <form method="POST" action="{{ route('tickets.accept',$ticket->id) }}">
-                        @csrf
+                <?php if($ticket->status == 'pending'): ?>
+                    <form method="POST" action="<?php echo e(route('tickets.accept',$ticket->id)); ?>">
+                        <?php echo csrf_field(); ?>
                         <button class="btn-green">✅ Accept Job</button>
                     </form>
-                @endif
+                <?php endif; ?>
 
-                @if($ticket->status == 'accepted')
-                    <form method="POST" action="{{ route('tickets.start',$ticket->id) }}">
-                        @csrf
+                <?php if($ticket->status == 'accepted'): ?>
+                    <form method="POST" action="<?php echo e(route('tickets.start',$ticket->id)); ?>">
+                        <?php echo csrf_field(); ?>
                         <button class="btn-blue">▶ Start Work</button>
                     </form>
-                @endif
+                <?php endif; ?>
 
-                @if(in_array($ticket->status, ['work_started','need_spare_parts']))
+                <?php if(in_array($ticket->status, ['work_started','need_spare_parts'])): ?>
 
-                    <form method="POST" action="{{ route('tickets.update',$ticket->id) }}" enctype="multipart/form-data">
-                        @csrf
+                    <form method="POST" action="<?php echo e(route('tickets.update',$ticket->id)); ?>" enctype="multipart/form-data">
+                        <?php echo csrf_field(); ?>
                         <input type="hidden" name="update_type" value="progress">
                         <textarea name="note" class="mobile-input" rows="3" placeholder="Work progress note"></textarea>
                         <input type="file" name="image" class="mobile-input" accept="image/*" capture="environment">
                         <button class="btn-blue">📝 Add Progress Update</button>
                     </form>
 
-                    <form method="POST" action="{{ route('tickets.update',$ticket->id) }}" enctype="multipart/form-data">
-                        @csrf
+                    <form method="POST" action="<?php echo e(route('tickets.update',$ticket->id)); ?>" enctype="multipart/form-data">
+                        <?php echo csrf_field(); ?>
                         <input type="hidden" name="update_type" value="spare_parts">
                         <input type="text" name="spare_parts" class="mobile-input" placeholder="Required spare parts">
                         <textarea name="note" class="mobile-input" rows="2" placeholder="Reason / details"></textarea>
@@ -215,85 +215,86 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
                         <button class="btn-red">📦 Request Spare Parts</button>
                     </form>
 
-                    <form method="POST" action="{{ route('tickets.complete',$ticket->id) }}" enctype="multipart/form-data">
-                        @csrf
+                    <form method="POST" action="<?php echo e(route('tickets.complete',$ticket->id)); ?>" enctype="multipart/form-data">
+                        <?php echo csrf_field(); ?>
                         <textarea name="note" class="mobile-input" rows="3" placeholder="Completion note" required></textarea>
                         <input type="file" name="image" class="mobile-input" accept="image/*" capture="environment">
                         <button class="btn-green">✅ Complete Ticket</button>
                     </form>
 
-                @endif
+                <?php endif; ?>
 
                 </div>
 
             </div>
 
-        @empty
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <div class="empty">
                 No tickets assigned yet.
             </div>
-        @endforelse
+        <?php endif; ?>
     </div>
 
     <div class="right-panel">
         <div class="title" style="font-size:24px;">Site Tickets</div>
         <div class="sub">Work assigned to you from a work site</div>
 
-        @forelse($siteTickets as $siteTicket)
+        <?php $__empty_1 = true; $__currentLoopData = $siteTickets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $siteTicket): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
             <div class="ticket-card">
                 <div class="ticket-top">
                     <div>
-                        <div class="ticket-no">Site ticket #{{ $siteTicket->id }}</div>
-                        <div class="date">{{ $siteTicket->created_at->format('d M Y h:i A') }}</div>
+                        <div class="ticket-no">Site ticket #<?php echo e($siteTicket->id); ?></div>
+                        <div class="date"><?php echo e($siteTicket->created_at->format('d M Y h:i A')); ?></div>
                     </div>
-                    <span class="badge {{ $siteTicket->status == 'pending' ? 'st-pending' : ($siteTicket->status == 'accepted' ? 'st-accepted' : 'st-rejected') }}">
-                        {{ ucfirst($siteTicket->status) }}
+                    <span class="badge <?php echo e($siteTicket->status == 'pending' ? 'st-pending' : ($siteTicket->status == 'accepted' ? 'st-accepted' : 'st-rejected')); ?>">
+                        <?php echo e(ucfirst($siteTicket->status)); ?>
+
                     </span>
                 </div>
 
                 <div class="info">
                     <span>Site</span>
-                    <b>{{ $siteTicket->site?->site_name ?? 'Site unavailable' }}</b>
+                    <b><?php echo e($siteTicket->site?->site_name ?? 'Site unavailable'); ?></b>
                 </div>
 
                 <div class="info">
                     <span>Zone</span>
-                    <b>{{ $siteTicket->zone?->zone_name ?? 'Not specified' }}</b>
+                    <b><?php echo e($siteTicket->zone?->zone_name ?? 'Not specified'); ?></b>
                 </div>
 
                 <div class="info">
                     <span>Work required</span>
-                    <b>{{ $siteTicket->work }}</b>
+                    <b><?php echo e($siteTicket->work); ?></b>
                 </div>
 
-                @if($siteTicket->note)
+                <?php if($siteTicket->note): ?>
                     <div class="info">
                         <span>Note</span>
-                        <b>{{ $siteTicket->note }}</b>
+                        <b><?php echo e($siteTicket->note); ?></b>
                     </div>
-                @endif
+                <?php endif; ?>
 
-                @if($siteTicket->status == 'pending')
+                <?php if($siteTicket->status == 'pending'): ?>
                     <div class="site-actions">
-                        <button class="btn-green" type="button" onclick="openSiteModal({{ $siteTicket->id }}, 'accept')">
+                        <button class="btn-green" type="button" onclick="openSiteModal(<?php echo e($siteTicket->id); ?>, 'accept')">
                             ✅ Accept
                         </button>
-                        <button class="btn-red" type="button" onclick="openSiteModal({{ $siteTicket->id }}, 'reject')">
+                        <button class="btn-red" type="button" onclick="openSiteModal(<?php echo e($siteTicket->id); ?>, 'reject')">
                             ❌ Reject
                         </button>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
-        @empty
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <div class="empty">
                 No site tickets assigned yet.
             </div>
-        @endforelse
+        <?php endif; ?>
     </div>
 
 </div>
 
-{{-- Accept / Reject Confirmation Modal --}}
+
 <div id="siteTicketModal" class="modal-overlay" onclick="closeModalBg(event)">
     <div class="modal-box">
         <div id="modalIcon" class="modal-icon"></div>
@@ -302,7 +303,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
         <div class="modal-actions">
             <button class="modal-cancel" onclick="closeSiteModal()">Cancel</button>
             <form id="modalForm" method="POST">
-                @csrf
+                <?php echo csrf_field(); ?>
                 <button id="modalConfirmBtn" class="modal-confirm" type="submit"></button>
             </form>
         </div>
@@ -310,8 +311,8 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
 </div>
 
 <div class="bottom-nav">
-    <a href="{{ route('user.dashboard') }}"><i>🏠</i>Home</a>
-    <a href="{{ route('staff.tickets') }}" class="active"><i>🎫</i>Tickets</a>
+    <a href="<?php echo e(route('user.dashboard')); ?>"><i>🏠</i>Home</a>
+    <a href="<?php echo e(route('staff.tickets')); ?>" class="active"><i>🎫</i>Tickets</a>
     <a href="#"><i>👤</i>Profile</a>
     <a href="#"><i>⚙</i>Settings</a>
 </div>
@@ -323,7 +324,7 @@ function startTravel(ticketId){
     fetch(`/tickets/${ticketId}/travel/start`, {
         method: "POST",
         headers: {
-            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+            "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>",
             "Accept": "application/json"
         }
     }).then(() => {
@@ -333,7 +334,7 @@ function startTravel(ticketId){
             fetch(`/tickets/${ticketId}/travel/location`, {
                 method: "POST",
                 headers: {
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>",
                     "Content-Type": "application/json",
                     "Accept": "application/json"
                 },
@@ -358,7 +359,7 @@ function markArrived(ticketId){
     fetch(`/tickets/${ticketId}/travel/arrived`, {
         method: "POST",
         headers: {
-            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+            "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>",
             "Accept": "application/json"
         }
     }).then(() => {
@@ -405,4 +406,6 @@ function closeModalBg(e) {
     if (e.target.id === 'siteTicketModal') closeSiteModal();
 }
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\Agelessone\resources\views/user/tickets/index.blade.php ENDPATH**/ ?>
