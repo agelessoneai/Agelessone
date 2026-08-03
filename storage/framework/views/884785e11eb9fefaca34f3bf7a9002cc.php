@@ -1,5 +1,0 @@
-<?php $__env->startSection('title','Edit Site Worker'); ?>
-<?php $__env->startSection('page-title','Edit Site Worker'); ?>
-<?php $__env->startSection('content'); ?><div class="mb-3"><a href="<?php echo e(route('admin.work-sites.workers.index',$workSite)); ?>">← <?php echo e($workSite->site_name); ?> Workers</a></div><div class="card card-dark p-4"><form method="POST" action="<?php echo e(route('admin.work-sites.workers.update',[$workSite,$worker])); ?>" enctype="multipart/form-data"><?php echo csrf_field(); ?> <?php echo method_field('PUT'); ?> <?php echo $__env->make('admin.workers._form', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><div class="mt-4"><a class="btn btn-outline-light" href="<?php echo e(route('admin.work-sites.workers.index',$workSite)); ?>">Cancel</a><button class="btn btn-primary">Update Worker</button></div></form></div><?php $__env->stopSection(); ?>
-
-<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\ageless-admin-panel\resources\views\admin\workers\edit.blade.php ENDPATH**/ ?>
