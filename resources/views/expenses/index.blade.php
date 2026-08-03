@@ -32,7 +32,13 @@
 <textarea name="review_note" class="form-control form-control-sm mb-2" rows="2" placeholder="Review note"></textarea>
 <div class="d-flex gap-2"><button name="status" value="approved" class="btn btn-sm btn-success">Approve</button><button name="status" value="rejected" class="btn btn-sm btn-danger">Reject</button></div>
 </form>
-@else<small class="d-block mt-2 muted">{{ $expense->reviewer?->name }} · {{ optional($expense->reviewed_at)->format('d M Y h:i A') }}</small>@if($expense->review_note)<small>{{ $expense->review_note }}</small>@endif@endif
-</td></tr>@empty<tr><td colspan="6" class="text-center py-5 muted">No expenses found.</td></tr>@endforelse</tbody>
+@else
+<small class="d-block mt-2 muted">{{ $expense->reviewer?->name }} · {{ optional($expense->reviewed_at)->format('d M Y h:i A') }}</small>
+@if($expense->review_note)<small>{{ $expense->review_note }}</small>@endif
+@endif
+</td></tr>
+@empty
+<tr><td colspan="6" class="text-center py-5 muted">No expenses found.</td></tr>
+@endforelse</tbody>
 </table></div><div class="p-3">{{ $expenses->links() }}</div></div>
 @endsection

@@ -1,5 +1,4 @@
 @extends('layouts.admin')
-<<<<<<< HEAD
 @section('content')
 
 <style>
@@ -107,7 +106,6 @@ body{background:#0e1320;color:#e8edf6;overflow:hidden}
 
                 {{ $parks->links() }}
 
-=======
 @section('content')
 
 <style>
@@ -215,7 +213,6 @@ body{background:#0e1320;color:#e8edf6;overflow:hidden}
 
                 {{ $parks->links() }}
 
->>>>>>> 353115acd2f12e033eed9c0c3cba0304f0b467b5
             </div>
 
 @endsection
