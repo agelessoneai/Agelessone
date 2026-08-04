@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\DailyWorkUpdate;
 use App\Models\SiteZone;
 use App\Models\User;
 use App\Models\Worker;
@@ -11,6 +12,8 @@ use App\Models\WorkerWorkSession;
 use App\Models\WorkSite;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class SiteSupervisorController extends Controller
 {
@@ -30,8 +33,9 @@ class SiteSupervisorController extends Controller
         $pending = WorkerAttendance::with(['worker','recordedBy','workSessions.siteZone'])->where('work_site_id', $site->id)->where('status', 'pending')->latest('attendance_date')->get();
         $today = WorkerAttendance::with(['worker','workSessions.siteZone'])->where('work_site_id', $site->id)->whereDate('attendance_date', today())->get()->keyBy('worker_id');
         $assignableSupervisors = User::whereIn('role', ['site_supervisor','supervisor'])->where('status', 'active')->orderBy('name')->get();
+        $dailyUpdates = DailyWorkUpdate::with('user')->where('work_site_id', $site->id)->latest()->take(20)->get();
 
-        return view('supervisor.dashboard', compact('site','attendance','pending','today','assignableSupervisors'));
+        return view('supervisor.dashboard', compact('site','attendance','pending','today','assignableSupervisors','dailyUpdates'));
     }
 
     public function storeWorker(Request $request)
@@ -153,5 +157,33 @@ class SiteSupervisorController extends Controller
         $data=$request->validate(['rejection_reason'=>['required','string','max:500']]);
         $workerAttendance->update(['status'=>'rejected','approved_by'=>$request->user()->id,'approved_at'=>now(),'rejection_reason'=>$data['rejection_reason']]);
         return back()->with('success','Attendance rejected.');
+    }
+
+    /** Store a daily work update (photo + optional note) from the supervisor dashboard. */
+    public function storeDailyUpdate(Request $request)
+    {
+        $site = $this->siteFor($request);
+        abort_unless($site, 403);
+
+        $validated = $request->validate([
+            'photo' => ['nullable', 'image', 'max:10240'],
+            'note'  => ['nullable', 'string', 'max:5000'],
+            'date'  => ['required', 'date'],
+        ]);
+
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('daily-work-updates', 'public');
+        }
+
+        DailyWorkUpdate::create([
+            'work_site_id' => $site->id,
+            'user_id'      => Auth::id(),
+            'photo'        => $photoPath,
+            'note'         => $validated['note'] ?? null,
+            'date'         => $validated['date'],
+        ]);
+
+        return back()->with('success', 'Daily work update posted successfully.');
     }
 }

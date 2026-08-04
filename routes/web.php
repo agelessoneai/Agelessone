@@ -23,6 +23,7 @@ use App\Http\Controllers\SalesLeadController;
 use App\Http\Controllers\WorkshopController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DailyWorkUpdateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +104,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/supervisor/work-cases/{siteZone}', [SiteSupervisorController::class, 'updateWorkCase'])->name('supervisor.work-cases.update');
     Route::post('/supervisor/attendance/{workerAttendance}/approve', [SiteSupervisorController::class, 'approveAttendance'])->name('supervisor.attendance.approve');
     Route::post('/supervisor/attendance/{workerAttendance}/reject', [SiteSupervisorController::class, 'rejectAttendance'])->name('supervisor.attendance.reject');
+    Route::post('/supervisor/daily-update', [SiteSupervisorController::class, 'storeDailyUpdate'])->name('supervisor.daily-update.store');
     });
 
     Route::middleware('role:security')->group(function () {
@@ -168,6 +170,17 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/site-tickets/{siteTicket}/reject', [ComplaintTicketController::class, 'rejectSiteTicket'])
         ->name('site.tickets.reject');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Staff Daily Work Updates
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/my-daily-updates', [DailyWorkUpdateController::class, 'index'])
+        ->name('staff.daily-updates');
+
+    Route::post('/my-daily-updates', [DailyWorkUpdateController::class, 'store'])
+        ->name('staff.daily-updates.store');
     });
 });
 
@@ -417,6 +430,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/work-sites/{workSite}/tickets', [WorkSiteController::class, 'storeTicket'])
         ->name('admin.work-sites.tickets.store');
 
+
     Route::delete('/admin/work-sites/{workSite}', [WorkSiteController::class, 'destroy'])
         ->name('admin.work-sites.destroy');
 
@@ -428,6 +442,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/work-sites/{workSite}', [WorkSiteController::class, 'show'])
         ->whereNumber('workSite')
         ->name('admin.work-sites.show');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Daily Work Update Approval (Admin / Supervisor / Project Manager)
+    |--------------------------------------------------------------------------
+    */
+    Route::post('/admin/daily-work-updates/{dailyWorkUpdate}/approve', [DailyWorkUpdateController::class, 'approve'])
+        ->name('admin.daily-updates.approve');
+
+    Route::post('/admin/daily-work-updates/{dailyWorkUpdate}/reject', [DailyWorkUpdateController::class, 'reject'])
+        ->name('admin.daily-updates.reject');
 
     /*
     |--------------------------------------------------------------------------

@@ -34,7 +34,7 @@ class WorkSiteController extends Controller
             'zones.workerAssignments.worker', 'workerAssignments.worker', 'workers',
             'inventoryMovements.item.category', 'inventoryMovements.user',
             'workerAttendances.worker', 'workerAttendances.recordedBy', 'workerAttendances.approvedBy', 'workerAttendances.workSessions.siteZone',
-            'attendances.user', 'visitors.recordedBy',
+            'attendances.user', 'visitors.recordedBy', 'dailyWorkUpdates.user',
         ]);
 
         $allWorkerAssignments = $workSite->workerAssignments;
@@ -47,6 +47,7 @@ class WorkSiteController extends Controller
         $approvedWorkerAttendances = $workSite->workerAttendances->where('status', 'approved')->sortByDesc('attendance_date');
         $pendingWorkerAttendances = $workSite->workerAttendances->where('status', 'pending')->sortByDesc('attendance_date');
         $siteVisitors = $workSite->visitors->sortByDesc('check_in_at');
+        $dailyWorkUpdates = $workSite->dailyWorkUpdates->sortByDesc('created_at');
 
         $siteInventory = $workSite->inventoryMovements
             ->whereIn('type', ['stock_out', 'adjustment'])
@@ -63,7 +64,7 @@ class WorkSiteController extends Controller
         return view('admin.work_sites.show', compact(
             'workSite', 'allWorkerAssignments', 'totalWorkers', 'siteProgress', 'siteInventory',
             'securityAttendance', 'supervisorAttendance', 'pendingAttendanceCount', 'activeWorkerAttendances',
-            'approvedWorkerAttendances', 'pendingWorkerAttendances', 'siteVisitors', 'teamMembers'
+            'approvedWorkerAttendances', 'pendingWorkerAttendances', 'siteVisitors', 'teamMembers', 'dailyWorkUpdates'
         ));
     }
 

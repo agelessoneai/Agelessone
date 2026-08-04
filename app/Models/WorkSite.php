@@ -98,4 +98,9 @@ class WorkSite extends Model
     {
         return $this->hasMany(SiteTicket::class);
     }
+
+    public function dailyWorkUpdates(): HasMany
+    {
+        return $this->hasMany(DailyWorkUpdate::class);
+    }
 }
