@@ -1,218 +1,225 @@
 @extends('layouts.admin')
-@section('content')
-
-<style>
-body{background:#0e1320;color:#e8edf6;overflow:hidden}
-.navbar,header{display:none!important}
-.container{max-width:100%!important;margin:0!important;padding:0!important}
-
-.app{display:grid;grid-template-columns:270px 1fr;height:100vh}
-.side{background:#151b29;border-right:1px solid #262f47}
-.brand{padding:18px;display:flex;gap:12px;align-items:center;border-bottom:1px solid #262f47}
-.logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#5b8cff,#9b6bff);display:grid;place-items:center;font-weight:800;font-size:22px;color:#fff}
-.brand h1{margin:0;font-size:17px}.brand p{margin:0;font-size:11px;color:#8794ac}
-.nav-title{padding:18px 24px 8px;font-size:11px;color:#8794ac;font-weight:700;letter-spacing:1px}
-.nav a{display:flex;padding:14px 22px;text-decoration:none;color:#a8b4cc}
-.nav a.active{background:#3f6fe0;color:#fff;border-radius:0 12px 12px 0}
-.main{overflow:auto}
-.top{height:76px;background:#151b29;display:flex;align-items:center;padding:0 30px;border-bottom:1px solid #262f47}
-.search{width:450px;padding:13px;background:#0e1320;border:1px solid #262f47;border-radius:12px;color:#fff}
-.user{margin-left:auto;display:flex;align-items:center;gap:12px}
-.avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#5b8cff,#37c281);display:grid;place-items:center;font-weight:700;color:#fff}
-.logout{background:transparent;border:1px solid #334155;padding:10px 18px;color:#fff;border-radius:10px}
-.content{padding:30px}
-.card-dark{background:#151b29;border:1px solid #262f47;border-radius:18px;padding:25px}
-.table{
-    width:100%;
-    color:#fff!important;
-    margin-bottom:0;
-}
-
-.table thead th{
-    background:#0e1320;
-    color:#8fa3c7!important;
-    border-color:#262f47!important;
-    font-size:13px;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:.6px;
-    padding:15px;
-}
-
-.table tbody td{
-    background:#151b29;
-    color:#ffffff!important;
-    border-color:#262f47!important;
-    vertical-align:middle;
-    font-size:15px;
-    font-weight:500;
-    padding:15px;
-}
-
-.table tbody tr:hover td{
-    background:#1c2436;
-}
-
-.table td strong{
-    color:#ffffff!important;
-    font-weight:800;
-}
-.btn-blue{background:#3f6fe0;color:#fff;border:0;border-radius:10px;padding:10px 16px;text-decoration:none}
-.muted{color:#8794ac}
-</style>
-
-<div class="card-dark">
-
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h3>Parks / Clients</h3>
-                        <p class="muted mb-0">All customer park list</p>
-                    </div>
-
-                    <a href="{{ route('admin.parks.create') }}" class="btn-blue">+ Add Park</a>
-                </div>
-
-                @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
-
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Park Name</th>
-                                <th>Contact Person</th>
-                                <th>Phone</th>
-                                <th>Location</th>
-                                <th>Created</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            @foreach($parks as $park)
-                            <tr>
-                                <td>#{{ $park->id }}</td>
-                                <td><strong>{{ $park->name }}</strong></td>
-                                <td>{{ $park->contact_person ?? '-' }}</td>
-                                <td>{{ $park->phone ?? '-' }}</td>
-                                <td>{{ $park->location ?? '-' }}</td>
-                                <td>{{ $park->created_at->format('d M Y') }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-                {{ $parks->links() }}
 
 @section('content')
-
 <style>
-body{background:#0e1320;color:#e8edf6;overflow:hidden}
-.navbar,header{display:none!important}
-.container{max-width:100%!important;margin:0!important;padding:0!important}
+    :root {
+        --bg-primary: #0e1320;
+        --bg-secondary: #151b29;
+        --bg-hover: #1c2436;
+        --border-color: #262f47;
+        --primary: #3f6fe0;
+        --text-primary: #e8edf6;
+        --text-secondary: #8794ac;
+        --text-heading: #ffffff;
+    }
 
-.app{display:grid;grid-template-columns:270px 1fr;height:100vh}
-.side{background:#151b29;border-right:1px solid #262f47}
-.brand{padding:18px;display:flex;gap:12px;align-items:center;border-bottom:1px solid #262f47}
-.logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#5b8cff,#9b6bff);display:grid;place-items:center;font-weight:800;font-size:22px;color:#fff}
-.brand h1{margin:0;font-size:17px}.brand p{margin:0;font-size:11px;color:#8794ac}
-.nav-title{padding:18px 24px 8px;font-size:11px;color:#8794ac;font-weight:700;letter-spacing:1px}
-.nav a{display:flex;padding:14px 22px;text-decoration:none;color:#a8b4cc}
-.nav a.active{background:#3f6fe0;color:#fff;border-radius:0 12px 12px 0}
-.main{overflow:auto}
-.top{height:76px;background:#151b29;display:flex;align-items:center;padding:0 30px;border-bottom:1px solid #262f47}
-.search{width:450px;padding:13px;background:#0e1320;border:1px solid #262f47;border-radius:12px;color:#fff}
-.user{margin-left:auto;display:flex;align-items:center;gap:12px}
-.avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#5b8cff,#37c281);display:grid;place-items:center;font-weight:700;color:#fff}
-.logout{background:transparent;border:1px solid #334155;padding:10px 18px;color:#fff;border-radius:10px}
-.content{padding:30px}
-.card-dark{background:#151b29;border:1px solid #262f47;border-radius:18px;padding:25px}
-.table{
-    width:100%;
-    color:#fff!important;
-    margin-bottom:0;
-}
+    body {
+        margin: 0;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+    }
 
-.table thead th{
-    background:#0e1320;
-    color:#8fa3c7!important;
-    border-color:#262f47!important;
-    font-size:13px;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:.6px;
-    padding:15px;
-}
+    .navbar,
+    header {
+        display: none !important;
+    }
 
-.table tbody td{
-    background:#151b29;
-    color:#ffffff!important;
-    border-color:#262f47!important;
-    vertical-align:middle;
-    font-size:15px;
-    font-weight:500;
-    padding:15px;
-}
+    .container {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
 
-.table tbody tr:hover td{
-    background:#1c2436;
-}
+    .parks-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 18px;
+        padding: 25px;
+    }
 
-.table td strong{
-    color:#ffffff!important;
-    font-weight:800;
-}
-.btn-blue{background:#3f6fe0;color:#fff;border:0;border-radius:10px;padding:10px 16px;text-decoration:none}
-.muted{color:#8794ac}
+    .parks-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .parks-header h3 {
+        margin: 0 0 4px;
+        color: var(--text-heading);
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .parks-header p {
+        margin: 0;
+        color: var(--text-secondary);
+    }
+
+    .btn-blue {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 16px;
+        border: 0;
+        border-radius: 10px;
+        background: var(--primary);
+        color: #ffffff;
+        font-weight: 600;
+        text-decoration: none;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-blue:hover {
+        color: #ffffff;
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    .parks-table {
+        width: 100%;
+        margin: 0;
+        color: var(--text-heading) !important;
+    }
+
+    .parks-table thead th {
+        padding: 15px;
+        border-color: var(--border-color) !important;
+        background: var(--bg-primary);
+        color: #8fa3c7 !important;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .parks-table tbody td {
+        padding: 15px;
+        border-color: var(--border-color) !important;
+        background: var(--bg-secondary);
+        color: var(--text-heading) !important;
+        font-size: 15px;
+        font-weight: 500;
+        vertical-align: middle;
+    }
+
+    .parks-table tbody tr:hover td {
+        background: var(--bg-hover);
+    }
+
+    .parks-table td strong {
+        color: var(--text-heading);
+        font-weight: 800;
+    }
+
+    .empty-state {
+        padding: 40px 20px !important;
+        color: var(--text-secondary) !important;
+        text-align: center;
+    }
+
+    .pagination-wrapper {
+        margin-top: 24px;
+    }
+
+    @media (max-width: 768px) {
+        .parks-card {
+            padding: 18px;
+            border-radius: 14px;
+        }
+
+        .parks-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .btn-blue {
+            width: 100%;
+        }
+    }
 </style>
 
-<div class="card-dark">
+<div class="parks-card">
+    <div class="parks-header">
+        <div>
+            <h3>Parks / Clients</h3>
+            <p>All customer parks</p>
+        </div>
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h3>Parks / Clients</h3>
-                        <p class="muted mb-0">All customer park list</p>
-                    </div>
+        <a
+            href="{{ route('admin.parks.create') }}"
+            class="btn-blue"
+        >
+            + Add Park
+        </a>
+    </div>
 
-                    <a href="{{ route('admin.parks.create') }}" class="btn-blue">+ Add Park</a>
-                </div>
+    @if (session('success'))
+        <div class="alert alert-success" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
 
-                @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
+    <div class="table-responsive">
+        <table class="table parks-table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Park Name</th>
+                    <th scope="col">Contact Person</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Created</th>
+                </tr>
+            </thead>
 
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Park Name</th>
-                                <th>Contact Person</th>
-                                <th>Phone</th>
-                                <th>Location</th>
-                                <th>Created</th>
-                            </tr>
-                        </thead>
+            <tbody>
+                @forelse ($parks as $park)
+                    <tr>
+                        <td>#{{ $park->id }}</td>
 
-                        <tbody>
-                            @foreach($parks as $park)
-                            <tr>
-                                <td>#{{ $park->id }}</td>
-                                <td><strong>{{ $park->name }}</strong></td>
-                                <td>{{ $park->contact_person ?? '-' }}</td>
-                                <td>{{ $park->phone ?? '-' }}</td>
-                                <td>{{ $park->location ?? '-' }}</td>
-                                <td>{{ $park->created_at->format('d M Y') }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                        <td>
+                            <strong>{{ $park->name }}</strong>
+                        </td>
 
-                {{ $parks->links() }}
+                        <td>{{ $park->contact_person ?: '—' }}</td>
 
-            </div>
+                        <td>
+                            @if ($park->phone)
+                                <a
+                                    href="tel:{{ $park->phone }}"
+                                    class="text-white text-decoration-none"
+                                >
+                                    {{ $park->phone }}
+                                </a>
+                            @else
+                                —
+                            @endif
+                        </td>
 
+                        <td>{{ $park->location ?: '—' }}</td>
+
+                        <td>
+                            {{ optional($park->created_at)->format('d M Y') ?: '—' }}
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            No parks have been added yet.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    @if ($parks->hasPages())
+        <div class="pagination-wrapper">
+            {{ $parks->links() }}
+        </div>
+    @endif
+</div>
 @endsection
