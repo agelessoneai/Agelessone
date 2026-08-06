@@ -1,11 +1,11 @@
-@extends('layouts.admin')
-@section('content')
 
-@php
+<?php $__env->startSection('content'); ?>
+
+<?php
 $authUser = Auth::user();
 $initials = strtoupper(substr($authUser->name,0,1));
 $roleName = $authUser->role == 'admin' ? 'Administrator' : 'User';
-@endphp
+?>
 
 <style>
 :root{--bg:#0e1320;--bg2:#0b101b;--panel:#151b29;--panel2:#1c2436;--line:#262f47;--txt:#e8edf6;--mut:#8794ac;--brand:#5b8cff;--brand2:#3f6fe0;--brand3:#9b6bff;--ok:#37c281;--crit:#ff5a6e;--warn:#f2b53b}
@@ -45,45 +45,45 @@ h2{font-size:21px;font-weight:700;margin:0}.muted{color:var(--mut)}
                     <p class="muted">Punch In / Punch Out records</p>
                 </div>
 
-                <a href="{{ route('admin.dashboard') }}" class="btn-blue">Back Dashboard</a>
+                <a href="<?php echo e(route('admin.dashboard')); ?>" class="btn-blue">Back Dashboard</a>
             </div>
 
-            @if(session('success'))
-                <div class="alert-app alert-success-app">{{ session('success') }}</div>
-            @endif
-            @if($errors->any())
-                <div class="alert-app alert-error-app">{{ $errors->first() }}</div>
-            @endif
+            <?php if(session('success')): ?>
+                <div class="alert-app alert-success-app"><?php echo e(session('success')); ?></div>
+            <?php endif; ?>
+            <?php if($errors->any()): ?>
+                <div class="alert-app alert-error-app"><?php echo e($errors->first()); ?></div>
+            <?php endif; ?>
 
             <div class="panel">
                 <div style="padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center">
                     <div><h3 style="margin:0;font-size:17px">Attendance Photo Alerts</h3><p class="muted" style="margin:5px 0 0">Mismatch or unverified photos are saved and reported here for Admin review.</p></div>
-                    <span class="badge-out">{{ $photoAlerts->whereNull('read_at')->count() }} Unread</span>
+                    <span class="badge-out"><?php echo e($photoAlerts->whereNull('read_at')->count()); ?> Unread</span>
                 </div>
                 <div class="table-responsive">
                     <table class="table">
                         <thead><tr><th>Status</th><th>Staff</th><th>Message</th><th>Photos</th><th>Time</th><th>Action</th></tr></thead>
                         <tbody>
-                        @forelse($photoAlerts as $alert)
-                            @php
+                        <?php $__empty_1 = true; $__currentLoopData = $photoAlerts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $alert): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <?php
                                 $attendanceAlert = $alert->attendance;
                                 $action = data_get($alert->data, 'action');
                                 $punchPhoto = $action === 'Punch Out' ? $attendanceAlert?->punch_out_photo : $attendanceAlert?->punch_in_photo;
-                            @endphp
-                            <tr style="opacity:{{ $alert->read_at ? '.65' : '1' }}">
-                                <td><span class="{{ data_get($alert->data, 'verification_status') === 'mismatch' ? 'badge-out' : 'badge-done' }}">{{ strtoupper(str_replace('_',' ',data_get($alert->data, 'verification_status','review'))) }}</span></td>
-                                <td><strong>{{ $alert->user?->display_name ?? 'Deleted staff' }}</strong><br><span class="muted">{{ $alert->user?->email ?? '-' }}</span></td>
-                                <td>{{ $alert->message }}<br><span class="muted">{{ data_get($alert->data, 'reason') }}</span></td>
+                            ?>
+                            <tr style="opacity:<?php echo e($alert->read_at ? '.65' : '1'); ?>">
+                                <td><span class="<?php echo e(data_get($alert->data, 'verification_status') === 'mismatch' ? 'badge-out' : 'badge-done'); ?>"><?php echo e(strtoupper(str_replace('_',' ',data_get($alert->data, 'verification_status','review')))); ?></span></td>
+                                <td><strong><?php echo e($alert->user?->display_name ?? 'Deleted staff'); ?></strong><br><span class="muted"><?php echo e($alert->user?->email ?? '-'); ?></span></td>
+                                <td><?php echo e($alert->message); ?><br><span class="muted"><?php echo e(data_get($alert->data, 'reason')); ?></span></td>
                                 <td><div class="actions">
-                                    @if($alert->user?->photo)<a target="_blank" href="{{ asset('storage/'.$alert->user->photo) }}"><img class="worker-photo" src="{{ asset('storage/'.$alert->user->photo) }}" title="Registered photo"></a>@endif
-                                    @if($punchPhoto)<a target="_blank" href="{{ asset('storage/'.$punchPhoto) }}"><img class="worker-photo" src="{{ asset('storage/'.$punchPhoto) }}" title="Punch photo"></a>@endif
+                                    <?php if($alert->user?->photo): ?><a target="_blank" href="<?php echo e(asset('storage/'.$alert->user->photo)); ?>"><img class="worker-photo" src="<?php echo e(asset('storage/'.$alert->user->photo)); ?>" title="Registered photo"></a><?php endif; ?>
+                                    <?php if($punchPhoto): ?><a target="_blank" href="<?php echo e(asset('storage/'.$punchPhoto)); ?>"><img class="worker-photo" src="<?php echo e(asset('storage/'.$punchPhoto)); ?>" title="Punch photo"></a><?php endif; ?>
                                 </div></td>
-                                <td>{{ $alert->created_at?->format('d M Y h:i A') }}</td>
-                                <td>@if(!$alert->read_at)<form method="POST" action="{{ route('admin.notifications.read', $alert) }}">@csrf<button class="btn-ok" type="submit">Mark Read</button></form>@else<span class="badge-done">Read</span>@endif</td>
+                                <td><?php echo e($alert->created_at?->format('d M Y h:i A')); ?></td>
+                                <td><?php if(!$alert->read_at): ?><form method="POST" action="<?php echo e(route('admin.notifications.read', $alert)); ?>"><?php echo csrf_field(); ?><button class="btn-ok" type="submit">Mark Read</button></form><?php else: ?><span class="badge-done">Read</span><?php endif; ?></td>
                             </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr><td colspan="6" style="text-align:center;padding:25px" class="muted">No photo verification alerts.</td></tr>
-                        @endforelse
+                        <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -98,28 +98,28 @@ h2{font-size:21px;font-weight:700;margin:0}.muted{color:var(--mut)}
                     <table class="table">
                         <thead><tr><th>Worker</th><th>Site / Work</th><th>Date</th><th>Time</th><th>Recorded By</th><th>Photo</th><th>Admin Action</th></tr></thead>
                         <tbody>
-                        @forelse($pendingWorkerAttendances as $record)
+                        <?php $__empty_1 = true; $__currentLoopData = $pendingWorkerAttendances; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $record): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr>
-                                <td><strong>{{ $record->worker?->name ?? 'Deleted worker' }}</strong><br><span class="muted">{{ $record->worker?->worker_code ?? '-' }}</span></td>
-                                <td><strong>{{ $record->workSite?->site_name ?? '-' }}</strong><br><span class="muted">{{ $record->siteZone?->zone_name ?? ($record->work_description ?: 'General work') }}</span></td>
-                                <td>{{ $record->attendance_date?->format('d M Y') }}</td>
-                                <td>{{ $record->punch_in ?: '-' }} — {{ $record->punch_out ?: 'Still inside' }}</td>
-                                <td>{{ $record->recordedBy?->name ?? '-' }}</td>
-                                <td>@if($record->punch_in_photo)<a href="{{ asset('storage/'.$record->punch_in_photo) }}" target="_blank"><img class="worker-photo" src="{{ asset('storage/'.$record->punch_in_photo) }}" alt="Attendance photo"></a>@else - @endif</td>
+                                <td><strong><?php echo e($record->worker?->name ?? 'Deleted worker'); ?></strong><br><span class="muted"><?php echo e($record->worker?->worker_code ?? '-'); ?></span></td>
+                                <td><strong><?php echo e($record->workSite?->site_name ?? '-'); ?></strong><br><span class="muted"><?php echo e($record->siteZone?->zone_name ?? ($record->work_description ?: 'General work')); ?></span></td>
+                                <td><?php echo e($record->attendance_date?->format('d M Y')); ?></td>
+                                <td><?php echo e($record->punch_in ?: '-'); ?> — <?php echo e($record->punch_out ?: 'Still inside'); ?></td>
+                                <td><?php echo e($record->recordedBy?->name ?? '-'); ?></td>
+                                <td><?php if($record->punch_in_photo): ?><a href="<?php echo e(asset('storage/'.$record->punch_in_photo)); ?>" target="_blank"><img class="worker-photo" src="<?php echo e(asset('storage/'.$record->punch_in_photo)); ?>" alt="Attendance photo"></a><?php else: ?> - <?php endif; ?></td>
                                 <td>
                                     <div class="actions">
-                                        <form method="POST" action="{{ route('admin.worker-attendance.approve', $record) }}">@csrf<button class="btn-ok" type="submit">Approve</button></form>
-                                        <form method="POST" action="{{ route('admin.worker-attendance.reject', $record) }}" class="actions">@csrf<input class="reject-input" name="rejection_reason" maxlength="500" placeholder="Rejection reason" required><button class="btn-reject" type="submit">Reject</button></form>
+                                        <form method="POST" action="<?php echo e(route('admin.worker-attendance.approve', $record)); ?>"><?php echo csrf_field(); ?><button class="btn-ok" type="submit">Approve</button></form>
+                                        <form method="POST" action="<?php echo e(route('admin.worker-attendance.reject', $record)); ?>" class="actions"><?php echo csrf_field(); ?><input class="reject-input" name="rejection_reason" maxlength="500" placeholder="Rejection reason" required><button class="btn-reject" type="submit">Reject</button></form>
                                     </div>
                                 </td>
                             </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr><td colspan="7" style="text-align:center;padding:25px" class="muted">No pending worker attendance.</td></tr>
-                        @endforelse
+                        <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
-                <div style="padding:18px">{{ $pendingWorkerAttendances->withQueryString()->links() }}</div>
+                <div style="padding:18px"><?php echo e($pendingWorkerAttendances->withQueryString()->links()); ?></div>
             </div>
 
             <div style="margin-top:24px"><h3 style="margin:0;font-size:17px">Staff Attendance</h3></div>
@@ -144,69 +144,74 @@ h2{font-size:21px;font-weight:700;margin:0}.muted{color:var(--mut)}
                         </thead>
 
                        <tbody>
-                            @foreach($attendances as $attendance)
+                            <?php $__currentLoopData = $attendances; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $attendance): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                <td>#{{ $attendance->id }}</td>
+                                <td>#<?php echo e($attendance->id); ?></td>
 
-                                <td><strong>{{ $attendance->user->name }}</strong></td>
+                                <td><strong><?php echo e($attendance->user->name); ?></strong></td>
 
-                                <td>{{ $attendance->user->email }}</td>
+                                <td><?php echo e($attendance->user->email); ?></td>
 
-                                <td>{{ \Carbon\Carbon::parse($attendance->date)->format('d M Y') }}</td>
+                                <td><?php echo e(\Carbon\Carbon::parse($attendance->date)->format('d M Y')); ?></td>
 
                                 <td>
-                                    @if($attendance->punch_in)
-                                        {{ \Carbon\Carbon::parse($attendance->punch_in)->format('h:i A') }}
-                                    @else
+                                    <?php if($attendance->punch_in): ?>
+                                        <?php echo e(\Carbon\Carbon::parse($attendance->punch_in)->format('h:i A')); ?>
+
+                                    <?php else: ?>
                                         -
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
 
-                                <td>{{ $attendance->location ?? '-' }}</td>
+                                <td><?php echo e($attendance->location ?? '-'); ?></td>
 
                                 <td>
-                                    @if($attendance->punch_out)
-                                        {{ \Carbon\Carbon::parse($attendance->punch_out)->format('h:i A') }}
-                                    @else
+                                    <?php if($attendance->punch_out): ?>
+                                        <?php echo e(\Carbon\Carbon::parse($attendance->punch_out)->format('h:i A')); ?>
+
+                                    <?php else: ?>
                                         <span class="badge-in">Office</span>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
 
-                                <td>{{ $attendance->punch_out_location ?? '-' }}</td>
+                                <td><?php echo e($attendance->punch_out_location ?? '-'); ?></td>
 
                                 <td>
-                                    @if($attendance->total_minutes)
-                                        {{ floor($attendance->total_minutes / 60) }}h
-                                        {{ $attendance->total_minutes % 60 }}m
-                                    @else
+                                    <?php if($attendance->total_minutes): ?>
+                                        <?php echo e(floor($attendance->total_minutes / 60)); ?>h
+                                        <?php echo e($attendance->total_minutes % 60); ?>m
+                                    <?php else: ?>
                                         -
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
 
                                 <td>
-                                    @php $verifyStatus = $attendance->punch_out ? $attendance->punch_out_verification_status : $attendance->punch_in_verification_status; $verifyScore = $attendance->punch_out ? $attendance->punch_out_match_score : $attendance->punch_in_match_score; @endphp
-                                    @if($verifyStatus === 'matched')<span class="badge-in">Verified {{ $verifyScore !== null ? $verifyScore.'%' : '' }}</span>
-                                    @elseif($verifyStatus === 'mismatch')<span class="badge-out">Mismatch {{ $verifyScore !== null ? $verifyScore.'%' : '' }}</span>
-                                    @elseif($verifyStatus)<span class="badge-done">Review Required</span>
-                                    @else - @endif
+                                    <?php $verifyStatus = $attendance->punch_out ? $attendance->punch_out_verification_status : $attendance->punch_in_verification_status; $verifyScore = $attendance->punch_out ? $attendance->punch_out_match_score : $attendance->punch_in_match_score; ?>
+                                    <?php if($verifyStatus === 'matched'): ?><span class="badge-in">Verified <?php echo e($verifyScore !== null ? $verifyScore.'%' : ''); ?></span>
+                                    <?php elseif($verifyStatus === 'mismatch'): ?><span class="badge-out">Mismatch <?php echo e($verifyScore !== null ? $verifyScore.'%' : ''); ?></span>
+                                    <?php elseif($verifyStatus): ?><span class="badge-done">Review Required</span>
+                                    <?php else: ?> - <?php endif; ?>
                                 </td>
 
                                 <td>
-                                    @if(!$attendance->punch_out)
+                                    <?php if(!$attendance->punch_out): ?>
                                         <span class="badge-in">In Office</span>
-                                    @else
+                                    <?php else: ?>
                                         <span class="badge-done">Completed</span>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                             </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                     </table>
                 </div>
 
                 <div style="padding:18px">
-                    {{ $attendances->withQueryString()->links() }}
+                    <?php echo e($attendances->withQueryString()->links()); ?>
+
                 </div>
             </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\ageless-admin-panel\resources\views/admin/attendance.blade.php ENDPATH**/ ?>
