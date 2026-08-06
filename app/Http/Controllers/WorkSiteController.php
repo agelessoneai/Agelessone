@@ -30,7 +30,7 @@ class WorkSiteController extends Controller
     {
         $workSite->load([
             'security', 'supervisor', 'siteManager', 'projectManager', 'projectCoordinator',
-            'projectCoordinator',
+            'projectHead', 'projectEngineer', 'workCoordinator',
             'zones.workerAssignments.worker', 'workerAssignments.worker', 'workers',
             'inventoryMovements.item.category', 'inventoryMovements.user',
             'workerAttendances.worker', 'workerAttendances.recordedBy', 'workerAttendances.approvedBy', 'workerAttendances.workSessions.siteZone',
@@ -68,7 +68,7 @@ class WorkSiteController extends Controller
         ));
     }
 
-    /** Update one of the five assignments from the site team popup. */
+    /** Update one of the site team assignments from the popup. */
     public function updateTeamMember(Request $request, WorkSite $workSite)
     {
         $positions = [
@@ -77,6 +77,9 @@ class WorkSiteController extends Controller
             'site_manager_id' => 'Site Manager',
             'site_supervisor_id' => 'Site Supervisor',
             'site_security_id' => 'Security',
+            'project_head_id' => 'Project Head',
+            'project_engineer_id' => 'Project Engineer/Architect',
+            'work_coordinator_id' => 'Work Coordinator',
         ];
 
         $validated = $request->validate([
@@ -192,6 +195,9 @@ class WorkSiteController extends Controller
             'site_manager_id' => 'nullable|exists:users,id',
             'project_manager_id' => 'nullable|exists:users,id',
             'project_coordinator_id' => 'nullable|exists:users,id',
+            'project_head_id' => 'nullable|exists:users,id',
+            'project_engineer_id' => 'nullable|exists:users,id',
+            'work_coordinator_id' => 'nullable|exists:users,id',
 
             'start_date' => 'nullable|date',
             'expected_end_date' => 'nullable|date|after_or_equal:start_date',
@@ -266,6 +272,9 @@ class WorkSiteController extends Controller
             'site_manager_id' => 'nullable|exists:users,id',
             'project_manager_id' => 'nullable|exists:users,id',
             'project_coordinator_id' => 'nullable|exists:users,id',
+            'project_head_id' => 'nullable|exists:users,id',
+            'project_engineer_id' => 'nullable|exists:users,id',
+            'work_coordinator_id' => 'nullable|exists:users,id',
 
             'start_date' => 'nullable|date',
             'expected_end_date' => 'nullable|date|after_or_equal:start_date',

@@ -56,6 +56,21 @@ class WorkSite extends Model
         return $this->belongsTo(User::class, 'project_coordinator_id');
     }
 
+    public function projectHead(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'project_head_id');
+    }
+
+    public function projectEngineer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'project_engineer_id');
+    }
+
+    public function workCoordinator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'work_coordinator_id');
+    }
+
     public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class);
