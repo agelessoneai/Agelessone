@@ -22,6 +22,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.
 .date-filter-bar input[type="date"]{background:#0d1628;color:#eef4ff;border:1px solid #30466e;border-radius:10px;padding:8px 12px;font-size:14px}
 .date-filter-bar .btn{border-radius:10px}
 .date-filter-bar .filter-info{color:#9cabc4;font-size:13px;margin-left:auto}
+.zone-row:hover{background:rgba(99,137,229,.1)!important}
 @media(max-width:1100px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.grid{grid-template-columns:1fr}.site-hero{padding:18px}.site-hero{flex-direction:column}.site-hero .d-flex{width:100%}.site-hero .btn{flex:1}.date-filter-bar{flex-direction:column;align-items:stretch}.date-filter-bar .filter-info{margin-left:0}}
 </style>
@@ -75,12 +76,57 @@ input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.
     </div></div>
 </div>
 
+<div class="modal fade team-modal" id="zoneActionModal" tabindex="-1" aria-labelledby="zoneActionTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content">
+        <div class="modal-header">
+            <div>
+                <h5 class="modal-title" id="zoneActionTitle">Manage Zone</h5>
+                <div class="team-action-note" id="selectedZoneInfo"></div>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <ul class="nav nav-pills nav-fill mb-4" role="tablist">
+                <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#zone-details" type="button">Zone Details</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#assign-zone-ticket" type="button">Assign Ticket</button></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="zone-details">
+                    <div class="cardx mb-3">
+                        <h6 class="mb-3">Zone Information</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6"><small class="text-muted">Zone Name</small><div id="detailZoneName" class="fw-bold">-</div></div>
+                            <div class="col-md-6"><small class="text-muted">Work Type</small><div id="detailZoneType" class="fw-bold">-</div></div>
+                            <div class="col-md-6"><small class="text-muted">Supervisor</small><div id="detailZoneSupervisor" class="fw-bold">-</div></div>
+                            <div class="col-md-6"><small class="text-muted">Status</small><div id="detailZoneStatus" class="fw-bold">-</div></div>
+                            <div class="col-md-6"><small class="text-muted">Start Date</small><div id="detailZoneStart" class="fw-bold">-</div></div>
+                            <div class="col-md-6"><small class="text-muted">End Date</small><div id="detailZoneEnd" class="fw-bold">-</div></div>
+                            <div class="col-md-6"><small class="text-muted">Progress</small><div class="progress-track mt-1" style="height:8px"><div id="detailZoneProgress" class="progress-fill" style="width:0%"></div></div><small id="detailZoneProgressText" class="text-muted">0%</small></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="assign-zone-ticket">
+                    <form method="POST" action="<?php echo e(route('admin.work-sites.tickets.store', $workSite)); ?>" id="zoneTicketForm">
+                        <?php echo csrf_field(); ?>
+                        <div class="mb-3"><label class="form-label">Assign to</label><select class="form-select" name="assigned_to" id="zoneTicketAssignee" required><option value="">Select team member</option><?php $__currentLoopData = $teamMembers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><option value="<?php echo e($member->id); ?>"><?php echo e($member->name); ?></option><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?></select></div>
+                        <div class="mb-3"><label class="form-label">Site</label><input class="form-control" value="<?php echo e($workSite->site_name); ?>" readonly></div>
+                        <div class="mb-3"><label class="form-label">Zone</label><input class="form-control" id="zoneTicketZoneName" readonly><input type="hidden" name="site_zone_id" id="zoneTicketZoneId"></div>
+                        <div class="mb-3"><label class="form-label">What work is required?</label><input class="form-control" name="work" maxlength="255" placeholder="Describe the work" required></div>
+                        <div class="mb-3"><label class="form-label">Note</label><textarea class="form-control" name="note" rows="3" maxlength="2000" placeholder="Add any instructions or notes"></textarea></div>
+                        <button class="btn btn-primary w-100" type="submit">Assign Ticket</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div></div>
+</div>
+
 <div class="sectionx d-flex justify-content-between align-items-center toggle-header" data-bs-toggle="collapse" data-bs-target="#workCasesBody" aria-expanded="false">
     <h4 class="mb-0 d-flex align-items-center gap-2"><span class="toggle-chevron">▼</span> Work Cases / Site Works</h4>
     <a class="btn btn-primary btn-sm" href="<?php echo e(route('admin.site-zones.create',['work_site_id'=>$workSite->id])); ?>">+ Add Site Work</a>
 </div>
-<div class="collapse toggle-body mt-3" id="workCasesBody">
-    <div class="cardx"><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Work</th><th>Type</th><th>Supervisor</th><th>Schedule</th><th>Status</th><th>Progress</th><th></th></tr></thead><tbody><?php $__empty_1 = true; $__currentLoopData = $workSite->zones; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $zone): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><tr><td><?php echo e($zone->zone_name); ?></td><td><?php echo e($zone->work_type); ?></td><td><?php echo e($zone->supervisor->name ?? '-'); ?></td><td><small><?php echo e($zone->start_date?->format('d M Y') ?? '-'); ?> <?php if($zone->start_time): ?> · <?php echo e(date('h:i A', strtotime($zone->start_time))); ?> <?php endif; ?></small><br><small class="text-muted">to <?php echo e($zone->expected_end_date?->format('d M Y') ?? '-'); ?> <?php if($zone->end_time): ?> · <?php echo e(date('h:i A', strtotime($zone->end_time))); ?> <?php endif; ?></small></td><td><?php echo e(ucfirst(str_replace('_',' ',$zone->status))); ?></td><td style="min-width:150px"><div class="progress-track"><div class="progress-fill" style="width:<?php echo e($zone->progress); ?>%"></div></div><small><?php echo e($zone->progress); ?>%</small></td><td><a href="<?php echo e(route('admin.site-zones.edit',$zone)); ?>">Edit</a></td></tr><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><tr><td colspan="7" class="text-center text-muted">No site works added.</td></tr><?php endif; ?></tbody></table></div></div>
+<div class="collapse toggle-body mt-3 show" id="workCasesBody">
+    <div class="cardx"><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Work</th><th>Type</th><th>Supervisor</th><th>Schedule</th><th>Status</th><th>Progress</th><th></th></tr></thead><tbody><?php $__empty_1 = true; $__currentLoopData = $workSite->zones; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $zone): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><tr class="zone-row" style="cursor:pointer" data-zone-id="<?php echo e($zone->id); ?>" data-zone-name="<?php echo e($zone->zone_name); ?>" data-zone-type="<?php echo e($zone->work_type); ?>" data-zone-supervisor="<?php echo e($zone->supervisor?->name ?? 'Not assigned'); ?>" data-zone-status="<?php echo e($zone->status); ?>" data-zone-progress="<?php echo e($zone->progress); ?>" data-zone-start="<?php echo e($zone->start_date?->format('Y-m-d') ?? ''); ?>" data-zone-end="<?php echo e($zone->expected_end_date?->format('Y-m-d') ?? ''); ?>"><td><strong><?php echo e($zone->zone_name); ?></strong></td><td><?php echo e($zone->work_type); ?></td><td><?php echo e($zone->supervisor->name ?? '-'); ?></td><td><small><?php echo e($zone->start_date?->format('d M Y') ?? '-'); ?> <?php if($zone->start_time): ?> · <?php echo e(date('h:i A', strtotime($zone->start_time))); ?> <?php endif; ?></small><br><small class="text-muted">to <?php echo e($zone->expected_end_date?->format('d M Y') ?? '-'); ?> <?php if($zone->end_time): ?> · <?php echo e(date('h:i A', strtotime($zone->end_time))); ?> <?php endif; ?></small></td><td><?php echo e(ucfirst(str_replace('_',' ',$zone->status))); ?></td><td style="min-width:150px"><div class="progress-track"><div class="progress-fill" style="width:<?php echo e($zone->progress); ?>%"></div></div><small><?php echo e($zone->progress); ?>%</small></td><td><a href="<?php echo e(route('admin.site-zones.edit',$zone)); ?>" class="btn btn-sm btn-outline-light">Edit</a></td></tr><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><tr><td colspan="7" class="text-center text-muted">No site works added.</td></tr><?php endif; ?></tbody></table></div></div>
 </div>
 
 <div class="sectionx d-flex align-items-center toggle-header" data-bs-toggle="collapse" data-bs-target="#securityActivityBody" aria-expanded="false" id="security-activity">
@@ -197,12 +243,51 @@ input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Team card click handlers
     document.querySelectorAll('.team-card').forEach(function (card) {
         card.addEventListener('click', function () {
             document.getElementById('teamPosition').value = card.dataset.position;
             document.getElementById('teamMember').value = card.dataset.memberId || '';
             document.getElementById('ticketAssignee').value = card.dataset.memberId || '';
             document.getElementById('selectedTeamMember').textContent = card.dataset.positionLabel + ': ' + card.dataset.memberName;
+        });
+    });
+
+    // Zone row click handlers
+    document.querySelectorAll('.zone-row').forEach(function (row) {
+        row.addEventListener('click', function (e) {
+            // Don't trigger if clicking the Edit button
+            if (e.target.closest('a') || e.target.closest('button')) return;
+
+            var zoneId = row.dataset.zoneId;
+            var zoneName = row.dataset.zoneName;
+            var zoneType = row.dataset.zoneType;
+            var zoneSupervisor = row.dataset.zoneSupervisor;
+            var zoneStatus = row.dataset.zoneStatus;
+            var zoneProgress = row.dataset.zoneProgress;
+            var zoneStart = row.dataset.zoneStart;
+            var zoneEnd = row.dataset.zoneEnd;
+
+            // Update zone details tab
+            document.getElementById('detailZoneName').textContent = zoneName;
+            document.getElementById('detailZoneType').textContent = zoneType || '-';
+            document.getElementById('detailZoneSupervisor').textContent = zoneSupervisor;
+            document.getElementById('detailZoneStatus').textContent = zoneStatus.replace(/_/g, ' ');
+            document.getElementById('detailZoneStart').textContent = zoneStart ? new Date(zoneStart).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-';
+            document.getElementById('detailZoneEnd').textContent = zoneEnd ? new Date(zoneEnd).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-';
+            document.getElementById('detailZoneProgress').style.width = zoneProgress + '%';
+            document.getElementById('detailZoneProgressText').textContent = zoneProgress + '%';
+
+            // Update ticket form
+            document.getElementById('zoneTicketZoneName').value = zoneName + (zoneType ? ' — ' + zoneType : '');
+            document.getElementById('zoneTicketZoneId').value = zoneId;
+
+            // Update modal title
+            document.getElementById('selectedZoneInfo').textContent = 'Zone: ' + zoneName;
+
+            // Show modal
+            var modal = new bootstrap.Modal(document.getElementById('zoneActionModal'));
+            modal.show();
         });
     });
 

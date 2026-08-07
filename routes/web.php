@@ -431,6 +431,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         ->name('admin.work-sites.tickets.store');
 
 
+
     Route::delete('/admin/work-sites/{workSite}', [WorkSiteController::class, 'destroy'])
         ->name('admin.work-sites.destroy');
 
