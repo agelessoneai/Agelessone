@@ -64,6 +64,7 @@
         <nav class="side-nav">
             <a class="{{ request()->routeIs('admin.attendance') ? 'active' : '' }}" href="{{ route('admin.attendance') }}">🕒 Attendance</a>
             <a class="{{ request()->routeIs('admin.work-history*') ? 'active' : '' }}" href="{{ route('admin.work-history.index') }}">📅 Work History</a>
+            <a class="{{ request()->routeIs('admin.wages*') || request()->routeIs('admin.work-sites.wages.*') ? 'active' : '' }}" href="{{ route('admin.wages.index') }}">💰 Worker Wages</a>
             <a class="{{ request()->routeIs('accounts.expenses.*') ? 'active' : '' }}" href="{{ route('accounts.expenses.index') }}">💳 Expense Approvals</a>
             <a class="{{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">👥 Office Staff</a>
             <a class="{{ request()->routeIs('profile.*') ? 'active' : '' }}" href="{{ route('profile.edit') }}">👤 My Profile</a>

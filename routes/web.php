@@ -25,6 +25,7 @@ use App\Http\Controllers\WorkshopController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DailyWorkUpdateController;
+use App\Http\Controllers\WorkerWageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,6 +107,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/supervisor/attendance/{workerAttendance}/approve', [SiteSupervisorController::class, 'approveAttendance'])->name('supervisor.attendance.approve');
     Route::post('/supervisor/attendance/{workerAttendance}/reject', [SiteSupervisorController::class, 'rejectAttendance'])->name('supervisor.attendance.reject');
     Route::post('/supervisor/daily-update', [SiteSupervisorController::class, 'storeDailyUpdate'])->name('supervisor.daily-update.store');
+    Route::get('/supervisor/wages/create', [WorkerWageController::class, 'supervisorCreate'])->name('supervisor.wages.create');
+    Route::post('/supervisor/wages', [WorkerWageController::class, 'supervisorStore'])->name('supervisor.wages.store');
     });
 
     Route::middleware('role:security')->group(function () {
@@ -535,6 +538,26 @@ Route::middleware(['auth', 'admin'])->group(function () {
         ->name('admin.machines.store');
     Route::get('/admin/machines/{machine}/qr', [MachineController::class, 'qr'])
         ->name('admin.machines.qr');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Worker Wages
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/admin/wages', [WorkerWageController::class, 'globalIndex'])
+        ->name('admin.wages.index');
+    Route::get('/admin/work-sites/{workSite}/wages', [WorkerWageController::class, 'index'])
+        ->name('admin.work-sites.wages.index');
+    Route::get('/admin/work-sites/{workSite}/wages/create', [WorkerWageController::class, 'create'])
+        ->name('admin.work-sites.wages.create');
+    Route::post('/admin/work-sites/{workSite}/wages', [WorkerWageController::class, 'store'])
+        ->name('admin.work-sites.wages.store');
+    Route::get('/admin/wages/{wage}/edit', [WorkerWageController::class, 'edit'])
+        ->name('admin.wages.edit');
+    Route::put('/admin/wages/{wage}', [WorkerWageController::class, 'update'])
+        ->name('admin.wages.update');
+    Route::delete('/admin/wages/{wage}', [WorkerWageController::class, 'destroy'])
+        ->name('admin.wages.destroy');
 
     });
 

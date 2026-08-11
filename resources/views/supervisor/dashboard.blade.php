@@ -174,6 +174,12 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
             </div>
         </div>
 
+        <div class="mb-3">
+            <a href="{{ route('supervisor.wages.create') }}" class="btn-app d-block text-center text-decoration-none" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
+                💰 Record Worker Wage
+            </a>
+        </div>
+
         <!-- My Attendance -->
         <div class="panel">
             <h4 style="font-size:17px;font-weight:700;margin-top:0;margin-bottom:14px;">My Attendance</h4>

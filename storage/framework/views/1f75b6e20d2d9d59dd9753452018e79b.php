@@ -64,6 +64,7 @@
         <nav class="side-nav">
             <a class="<?php echo e(request()->routeIs('admin.attendance') ? 'active' : ''); ?>" href="<?php echo e(route('admin.attendance')); ?>">🕒 Attendance</a>
             <a class="<?php echo e(request()->routeIs('admin.work-history*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.work-history.index')); ?>">📅 Work History</a>
+            <a class="<?php echo e(request()->routeIs('admin.wages*') || request()->routeIs('admin.work-sites.wages.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.wages.index')); ?>">💰 Worker Wages</a>
             <a class="<?php echo e(request()->routeIs('accounts.expenses.*') ? 'active' : ''); ?>" href="<?php echo e(route('accounts.expenses.index')); ?>">💳 Expense Approvals</a>
             <a class="<?php echo e(request()->routeIs('admin.users*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.users.index')); ?>">👥 Office Staff</a>
             <a class="<?php echo e(request()->routeIs('profile.*') ? 'active' : ''); ?>" href="<?php echo e(route('profile.edit')); ?>">👤 My Profile</a>

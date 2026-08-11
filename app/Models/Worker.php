@@ -31,6 +31,7 @@ class Worker extends Model
         'emergency_contact',
         'address',
         'active',
+        'standard_hours',
     ];
 
     public static function roles(): array
