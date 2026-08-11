@@ -51,6 +51,7 @@
             <a class="<?php echo e(request()->routeIs('admin.tickets*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.tickets')); ?>">🎫 Complaint Tickets</a>
             <a class="<?php echo e(request()->routeIs('admin.work-sites*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.work-sites')); ?>">📍 Work Sites</a>
             <a class="<?php echo e(request()->routeIs('admin.site-assets*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.site-assets')); ?>">🛠 Site Assets</a>
+            <a class="<?php echo e(request()->routeIs('admin.machines*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.machines.index')); ?>">🖥️ Machine Details</a>
         </nav>
 
         <div class="nav-title">INVENTORY</div>

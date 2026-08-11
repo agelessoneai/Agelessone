@@ -11,6 +11,7 @@ use App\Http\Controllers\SparePartController;
 use App\Http\Controllers\WorkSiteController;
 use App\Http\Controllers\SiteZoneController;
 use App\Http\Controllers\SiteAssetController;
+use App\Http\Controllers\MachineController;
 use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\InventoryMovementController;
 use App\Http\Controllers\OfficeInventoryController;
@@ -521,4 +522,26 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::delete('/{worker}', [WorkerController::class, 'destroy'])->name('destroy');
         });
 
+    /*
+    |--------------------------------------------------------------------------
+    | Machine Details
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/admin/machines', [MachineController::class, 'index'])
+        ->name('admin.machines.index');
+    Route::get('/admin/machines/create', [MachineController::class, 'create'])
+        ->name('admin.machines.create');
+    Route::post('/admin/machines', [MachineController::class, 'store'])
+        ->name('admin.machines.store');
+    Route::get('/admin/machines/{machine}/qr', [MachineController::class, 'qr'])
+        ->name('admin.machines.qr');
+
     });
+
+/*
+|--------------------------------------------------------------------------
+| Public Machine Details Scan
+|--------------------------------------------------------------------------
+*/
+Route::get('/machines/{machine}', [MachineController::class, 'show'])
+    ->name('machines.show');

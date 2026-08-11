@@ -51,6 +51,7 @@
             <a class="{{ request()->routeIs('admin.tickets*') ? 'active' : '' }}" href="{{ route('admin.tickets') }}">🎫 Complaint Tickets</a>
             <a class="{{ request()->routeIs('admin.work-sites*') ? 'active' : '' }}" href="{{ route('admin.work-sites') }}">📍 Work Sites</a>
             <a class="{{ request()->routeIs('admin.site-assets*') ? 'active' : '' }}" href="{{ route('admin.site-assets') }}">🛠 Site Assets</a>
+            <a class="{{ request()->routeIs('admin.machines*') ? 'active' : '' }}" href="{{ route('admin.machines.index') }}">🖥️ Machine Details</a>
         </nav>
 
         <div class="nav-title">INVENTORY</div>
