@@ -27,11 +27,9 @@
             <h4>💰 All Worker Wages</h4>
             <p>View, filter, and track worker wages and overtime across all work sites.</p>
         </div>
-        @if($selectedSite)
-            <a href="{{ route('admin.work-sites.wages.create', $selectedSite) }}" class="btn btn-primary d-flex align-items-center gap-2">
-                <span>➕</span> Add Wage Entry ({{ $selectedSite->site_name }})
-            </a>
-        @endif
+        <a href="{{ route('admin.wages.create') }}" class="btn btn-primary d-flex align-items-center gap-2">
+            <span>➕</span> Add Wage Entry
+        </a>
     </div>
 
     {{-- Filters --}}

@@ -97,18 +97,24 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:site_supervisor')->group(function () {
-    Route::get('/supervisor/dashboard', [SiteSupervisorController::class, 'dashboard'])->name('supervisor.dashboard');
-    Route::post('/supervisor/workers', [SiteSupervisorController::class, 'storeWorker'])->name('supervisor.workers.store');
-    Route::post('/supervisor/workers/{worker}/start', [SiteSupervisorController::class, 'punchInWorker'])->name('supervisor.workers.start');
-    Route::post('/supervisor/worker-attendance/{workerAttendance}/change-work', [SiteSupervisorController::class, 'changeWorkerWork'])->name('supervisor.workers.change-work');
-    Route::post('/supervisor/worker-attendance/{workerAttendance}/end', [SiteSupervisorController::class, 'punchOutWorker'])->name('supervisor.workers.end');
-    Route::post('/supervisor/work-cases', [SiteSupervisorController::class, 'storeWorkCase'])->name('supervisor.work-cases.store');
-    Route::put('/supervisor/work-cases/{siteZone}', [SiteSupervisorController::class, 'updateWorkCase'])->name('supervisor.work-cases.update');
-    Route::post('/supervisor/attendance/{workerAttendance}/approve', [SiteSupervisorController::class, 'approveAttendance'])->name('supervisor.attendance.approve');
-    Route::post('/supervisor/attendance/{workerAttendance}/reject', [SiteSupervisorController::class, 'rejectAttendance'])->name('supervisor.attendance.reject');
-    Route::post('/supervisor/daily-update', [SiteSupervisorController::class, 'storeDailyUpdate'])->name('supervisor.daily-update.store');
-    Route::get('/supervisor/wages/create', [WorkerWageController::class, 'supervisorCreate'])->name('supervisor.wages.create');
-    Route::post('/supervisor/wages', [WorkerWageController::class, 'supervisorStore'])->name('supervisor.wages.store');
+        Route::get('/supervisor/dashboard', [SiteSupervisorController::class, 'dashboard'])->name('supervisor.dashboard');
+        Route::post('/supervisor/workers', [SiteSupervisorController::class, 'storeWorker'])->name('supervisor.workers.store');
+        Route::post('/supervisor/workers/{worker}/start', [SiteSupervisorController::class, 'punchInWorker'])->name('supervisor.workers.start');
+        Route::post('/supervisor/worker-attendance/{workerAttendance}/change-work', [SiteSupervisorController::class, 'changeWorkerWork'])->name('supervisor.workers.change-work');
+        Route::post('/supervisor/worker-attendance/{workerAttendance}/end', [SiteSupervisorController::class, 'punchOutWorker'])->name('supervisor.workers.end');
+        Route::post('/supervisor/work-cases', [SiteSupervisorController::class, 'storeWorkCase'])->name('supervisor.work-cases.store');
+        Route::put('/supervisor/work-cases/{siteZone}', [SiteSupervisorController::class, 'updateWorkCase'])->name('supervisor.work-cases.update');
+        Route::post('/supervisor/attendance/{workerAttendance}/approve', [SiteSupervisorController::class, 'approveAttendance'])->name('supervisor.attendance.approve');
+        Route::post('/supervisor/attendance/{workerAttendance}/reject', [SiteSupervisorController::class, 'rejectAttendance'])->name('supervisor.attendance.reject');
+        Route::post('/supervisor/daily-update', [SiteSupervisorController::class, 'storeDailyUpdate'])->name('supervisor.daily-update.store');
+    });
+
+    Route::middleware('role:site_supervisor,site_manager,project_manager,project_coordinator,project_head')->group(function () {
+        Route::get('/supervisor/wages/create', [WorkerWageController::class, 'supervisorCreate'])->name('supervisor.wages.create');
+        Route::post('/supervisor/wages', [WorkerWageController::class, 'supervisorStore'])->name('supervisor.wages.store');
+        Route::get('/supervisor/wages/{wage}/edit', [WorkerWageController::class, 'supervisorEdit'])->name('supervisor.wages.edit');
+        Route::put('/supervisor/wages/{wage}', [WorkerWageController::class, 'supervisorUpdate'])->name('supervisor.wages.update');
+        Route::delete('/supervisor/wages/{wage}', [WorkerWageController::class, 'supervisorDestroy'])->name('supervisor.wages.destroy');
     });
 
     Route::middleware('role:security')->group(function () {
@@ -546,6 +552,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     */
     Route::get('/admin/wages', [WorkerWageController::class, 'globalIndex'])
         ->name('admin.wages.index');
+    Route::get('/admin/wages/create', [WorkerWageController::class, 'globalCreate'])
+        ->name('admin.wages.create');
+    Route::post('/admin/wages', [WorkerWageController::class, 'globalStore'])
+        ->name('admin.wages.store');
     Route::get('/admin/work-sites/{workSite}/wages', [WorkerWageController::class, 'index'])
         ->name('admin.work-sites.wages.index');
     Route::get('/admin/work-sites/{workSite}/wages/create', [WorkerWageController::class, 'create'])

@@ -34,10 +34,35 @@ class DashboardController extends Controller
 
     public function user(): View
     {
-        $attendance = Attendance::where('user_id', auth()->id())
+        $user = auth()->user();
+        $attendance = Attendance::where('user_id', $user->id)
             ->whereDate('date', today())
             ->first();
 
-        return view('user.dashboard', compact('attendance'));
+        $todayMinutes = 0;
+        if ($attendance) {
+            if ($attendance->punch_out) {
+                $todayMinutes = $attendance->total_minutes ?? 0;
+            } elseif ($attendance->punch_in) {
+                $todayMinutes = max(0, (int) now()->diffInMinutes($attendance->punch_in));
+            }
+        }
+
+        $monthMinutes = Attendance::where('user_id', $user->id)
+            ->whereMonth('date', now()->month)
+            ->whereYear('date', now()->year)
+            ->sum('total_minutes');
+
+        $weekMinutes = Attendance::where('user_id', $user->id)
+            ->whereBetween('date', [now()->startOfWeek(), now()->endOfWeek()])
+            ->sum('total_minutes');
+
+        if ($attendance && !$attendance->punch_out && $attendance->punch_in) {
+            $ongoing = max(0, (int) now()->diffInMinutes($attendance->punch_in));
+            $monthMinutes += $ongoing;
+            $weekMinutes += $ongoing;
+        }
+
+        return view('user.dashboard', compact('attendance', 'todayMinutes', 'monthMinutes', 'weekMinutes'));
     }
 }

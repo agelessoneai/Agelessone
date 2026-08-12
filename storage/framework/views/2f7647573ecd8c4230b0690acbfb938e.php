@@ -25,11 +25,9 @@
             <h4>💰 All Worker Wages</h4>
             <p>View, filter, and track worker wages and overtime across all work sites.</p>
         </div>
-        <?php if($selectedSite): ?>
-            <a href="<?php echo e(route('admin.work-sites.wages.create', $selectedSite)); ?>" class="btn btn-primary d-flex align-items-center gap-2">
-                <span>➕</span> Add Wage Entry (<?php echo e($selectedSite->site_name); ?>)
-            </a>
-        <?php endif; ?>
+        <a href="<?php echo e(route('admin.wages.create')); ?>" class="btn btn-primary d-flex align-items-center gap-2">
+            <span>➕</span> Add Wage Entry
+        </a>
     </div>
 
     

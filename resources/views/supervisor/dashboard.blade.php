@@ -216,10 +216,13 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',syst
             <form method="POST" action="{{ route('supervisor.workers.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="row g-2">
-                    <div class="col-md-4 mb-2"><input class="form-control" name="name" placeholder="Worker name" required></div>
+                    <div class="col-md-3 mb-2"><input class="form-control" name="name" placeholder="Worker name" required></div>
                     <div class="col-md-3 mb-2"><input class="form-control" name="mobile" placeholder="Mobile"></div>
-                    <div class="col-md-3 mb-2"><input class="form-control" name="trade" placeholder="Trade / skill" required></div>
-                    <div class="col-md-2 mb-2"><input class="form-control" type="file" name="photo" accept="image/*" capture="user" required></div>
+                    <div class="col-md-3 mb-2"><input class="form-control" name="trade" placeholder="Trade/skill" required></div>
+                    <div class="col-md-3 mb-2"><input class="form-control" type="file" name="photo" accept="image/*" capture="user" required></div>
+                    <div class="col-md-4 mb-2"><input class="form-control" type="number" step="0.01" min="0" name="daily_wage" placeholder="Daily Wage (₹)"></div>
+                    <div class="col-md-4 mb-2"><input class="form-control" type="number" step="0.5" min="0" name="standard_hours" placeholder="Standard Hrs (e.g. 8)" value="8"></div>
+                    <div class="col-md-4 mb-2"><input class="form-control" type="number" step="0.01" min="0" name="overtime_rate" placeholder="OT Rate (₹/hr)"></div>
                 </div>
                 <button class="btn btn-primary mt-2 btn-app" style="width:auto;padding:10px 24px;">Add Worker</button>
             </form>

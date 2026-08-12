@@ -6,6 +6,7 @@ use App\Models\Worker;
 use App\Models\WorkerWage;
 use App\Models\WorkSite;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class WorkerWageController extends Controller
 {
@@ -68,6 +69,29 @@ class WorkerWageController extends Controller
     }
 
     /**
+     * Show form to add a wage entry without specific work site (admin).
+     */
+    public function globalCreate()
+    {
+        $workSites = WorkSite::orderBy('site_name')->get();
+        // Get all active workers grouped by work_site_id
+        $workers = Worker::where('active', true)->orderBy('name')->get();
+        return view('admin.wages.global-create', compact('workSites', 'workers'));
+    }
+
+    /**
+     * Store wage entry without specific work site in URL (admin).
+     */
+    public function globalStore(Request $request)
+    {
+        $validated = $request->validate([
+            'work_site_id' => ['required', 'exists:work_sites,id']
+        ]);
+        $workSite = WorkSite::findOrFail($validated['work_site_id']);
+        return $this->saveWage($request, $workSite, route('admin.wages.index'));
+    }
+
+    /**
      * Show form to add a wage entry (admin).
      */
     public function create(WorkSite $workSite)
@@ -91,18 +115,31 @@ class WorkerWageController extends Controller
     {
         $user = auth()->user();
 
-        // Find work site the supervisor is assigned to
+        // Find work site the user is assigned to
         $workSite = WorkSite::where('site_supervisor_id', $user->id)
             ->orWhere('site_manager_id', $user->id)
+            ->orWhere('project_manager_id', $user->id)
+            ->orWhere('project_coordinator_id', $user->id)
+            ->orWhere('project_head_id', $user->id)
+            ->orWhere('work_coordinator_id', $user->id)
             ->first();
 
+        // If no direct site assignment, send admin/managers to global wage form
         if (!$workSite) {
-            return back()->with('error', 'You are not assigned to any work site.');
+            if (Route::has('admin.wages.create') && in_array($user->role, ['admin','project_manager','project_coordinator','project_head','site_manager'])) {
+                return redirect()->route('admin.wages.create')->with('info', 'Please select a work site and worker.');
+            }
+            return back()->with('error', 'You are not assigned to any work site. Please contact your administrator.');
         }
 
         $workers = $workSite->workers()->where('active', true)->orderBy('name')->get();
+        $recentWages = WorkerWage::with('worker')
+            ->where('work_site_id', $workSite->id)
+            ->whereDate('created_at', today())
+            ->orderByDesc('id')
+            ->get();
 
-        return view('supervisor.wages.create', compact('workSite', 'workers'));
+        return view('supervisor.wages.create', compact('workSite', 'workers', 'recentWages'));
     }
 
     /**
@@ -124,6 +161,62 @@ class WorkerWageController extends Controller
     }
 
     /**
+     * Supervisor: Show form to edit a wage entry.
+     */
+    public function supervisorEdit(WorkerWage $wage)
+    {
+        $user = auth()->user();
+        $isManager = in_array($user->id, [
+            $wage->workSite->site_supervisor_id,
+            $wage->workSite->site_manager_id,
+            $wage->workSite->project_manager_id,
+            $wage->workSite->project_coordinator_id,
+            $wage->workSite->project_head_id
+        ]);
+        abort_unless($wage->recorded_by === $user->id || $isManager, 403);
+        
+        $wage->load('worker');
+        return view('supervisor.wages.edit', compact('wage'));
+    }
+
+    /**
+     * Supervisor: Update wage entry.
+     */
+    public function supervisorUpdate(Request $request, WorkerWage $wage)
+    {
+        $user = auth()->user();
+        $isManager = in_array($user->id, [
+            $wage->workSite->site_supervisor_id,
+            $wage->workSite->site_manager_id,
+            $wage->workSite->project_manager_id,
+            $wage->workSite->project_coordinator_id,
+            $wage->workSite->project_head_id
+        ]);
+        abort_unless($wage->recorded_by === $user->id || $isManager, 403);
+        
+        return $this->updateWageLogic($request, $wage, route('supervisor.wages.create'));
+    }
+
+    /**
+     * Supervisor: Delete a wage entry.
+     */
+    public function supervisorDestroy(WorkerWage $wage)
+    {
+        $user = auth()->user();
+        $isManager = in_array($user->id, [
+            $wage->workSite->site_supervisor_id,
+            $wage->workSite->site_manager_id,
+            $wage->workSite->project_manager_id,
+            $wage->workSite->project_coordinator_id,
+            $wage->workSite->project_head_id
+        ]);
+        abort_unless($wage->recorded_by === $user->id || $isManager, 403);
+        
+        $wage->delete();
+        return back()->with('success', 'Wage record deleted successfully.');
+    }
+
+    /**
      * Show form to edit a wage entry (admin).
      */
     public function edit(WorkerWage $wage)
@@ -136,6 +229,11 @@ class WorkerWageController extends Controller
      * Update a wage entry (admin).
      */
     public function update(Request $request, WorkerWage $wage)
+    {
+        return $this->updateWageLogic($request, $wage, route('admin.wages.index'));
+    }
+
+    private function updateWageLogic(Request $request, WorkerWage $wage, string $redirectRoute)
     {
         $validated = $request->validate([
             'date'          => ['required', 'date'],
@@ -156,7 +254,6 @@ class WorkerWageController extends Controller
         $overtimePay  = round($overtimeHours * $overtimeRate, 2);
         $totalWage    = round($baseWage + $overtimePay, 2);
 
-        // Optionally update worker default rates if worker currently has 0
         if ($worker->daily_wage == 0 && $baseWage > 0) {
             $worker->update(['daily_wage' => $baseWage]);
         }
@@ -175,7 +272,7 @@ class WorkerWageController extends Controller
             'notes'         => $validated['notes'] ?? null,
         ]);
 
-        return redirect()->route('admin.wages.index')
+        return redirect($redirectRoute)
             ->with('success', 'Wage entry updated successfully. Total: ₹' . number_format($totalWage, 2));
     }
 
@@ -191,7 +288,7 @@ class WorkerWageController extends Controller
     /**
      * Shared wage saving logic.
      */
-    private function saveWage(Request $request, WorkSite $workSite)
+    private function saveWage(Request $request, WorkSite $workSite, string $redirectRoute = null)
     {
         $validated = $request->validate([
             'worker_id'     => ['required', 'exists:workers,id'],
@@ -244,9 +341,13 @@ class WorkerWageController extends Controller
             'recorded_by'   => auth()->id(),
         ]);
 
-        $route = auth()->user()->role === 'admin'
-            ? route('admin.work-sites.wages.index', $workSite)
-            : route('supervisor.wages.create');
+        if ($redirectRoute) {
+            $route = $redirectRoute;
+        } else {
+            $route = auth()->user()->role === 'admin'
+                ? route('admin.work-sites.wages.index', $workSite)
+                : route('supervisor.wages.create');
+        }
 
         return redirect($route)->with('success', 'Wage entry saved. Total: ₹' . number_format($totalWage, 2));
     }

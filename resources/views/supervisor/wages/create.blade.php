@@ -36,7 +36,7 @@
 
     <div class="wage-form-card">
         <h4>Wage Entry</h4>
-        <p class="sub">{{ $workSite->name }} — Enter worker hours and rate for auto-calculation.</p>
+        <p class="sub">{{ $workSite->site_name }} — Enter worker hours and rate for auto-calculation.</p>
 
         <form method="POST" action="{{ route('supervisor.wages.store') }}">
             @csrf
@@ -100,7 +100,31 @@
         </form>
     </div>
 
-    <a href="{{ route('supervisor.dashboard') }}" class="btn btn-outline-secondary w-100 mt-3">← Back to Dashboard</a>
+    @if($recentWages->count())
+        <div class="mt-4">
+            <h5 class="text-white mb-3" style="font-size:16px;">Today's Entered Wages</h5>
+            @foreach($recentWages as $wage)
+                <div class="wage-form-card mb-3" style="padding: 16px;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong class="text-white">{{ $wage->worker->name }}</strong>
+                            <div class="sub mb-0 mt-1">{{ $wage->hours_worked }}h worked · Total: <strong class="text-success">₹{{ number_format($wage->total_wage, 2) }}</strong></div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('supervisor.wages.edit', $wage) }}" class="btn btn-sm" style="background:#1c2436; border:1px solid #262f47; color:#e8edf6;">Edit</a>
+                            <form method="POST" action="{{ route('supervisor.wages.destroy', $wage) }}" onsubmit="return confirm('Delete this wage entry?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-sm btn-outline-danger">Del</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @endif
+
+    <a href="{{ route('supervisor.dashboard') }}" class="btn btn-outline-secondary w-100 mt-3 mb-4">← Back to Dashboard</a>
 </div>
 
 <script>

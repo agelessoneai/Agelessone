@@ -1,7 +1,7 @@
-@extends('layouts.admin')
-@section('content')
 
-@php
+<?php $__env->startSection('content'); ?>
+
+<?php
     $user = Auth::user();
 
     $words = explode(' ', trim($user->name));
@@ -28,7 +28,7 @@
     $roleName = $roleLabels[$user->role] ?? ucfirst(str_replace('_', ' ', $user->role));
 
     $safeUsersCount = $usersCount ?? 0;
-@endphp
+?>
 
 <style>
 :root{
@@ -490,7 +490,8 @@ header{
                     <h2>Executive Dashboard</h2>
 
                     <p>
-                        {{ now()->format('l, d F Y') }}
+                        <?php echo e(now()->format('l, d F Y')); ?>
+
                         · Live across service, inventory, workforce and projects
                     </p>
                 </div>
@@ -501,31 +502,31 @@ header{
                 </div>
             </div>
 
-            @if(($unreadAdminNotifications ?? 0) > 0)
+            <?php if(($unreadAdminNotifications ?? 0) > 0): ?>
                 <div style="margin:18px 0;padding:16px 18px;border:1px solid rgba(255,90,110,.45);background:rgba(255,90,110,.12);border-radius:13px;display:flex;justify-content:space-between;gap:15px;align-items:center">
-                    <div><strong>⚠️ {{ $unreadAdminNotifications }} Attendance Photo Alert(s)</strong><br><span style="color:var(--mut)">Punch records were saved, but the uploaded photos need Admin review.</span></div>
-                    <a href="{{ route('admin.attendance') }}" class="btn-blue">Review Alerts</a>
+                    <div><strong>⚠️ <?php echo e($unreadAdminNotifications); ?> Attendance Photo Alert(s)</strong><br><span style="color:var(--mut)">Punch records were saved, but the uploaded photos need Admin review.</span></div>
+                    <a href="<?php echo e(route('admin.attendance')); ?>" class="btn-blue">Review Alerts</a>
                 </div>
-            @endif
+            <?php endif; ?>
 
             <div class="kpis">
 
                 <div class="kpi">
                     <small>Total Users</small>
-                    <h1>{{ $safeUsersCount }}</h1>
+                    <h1><?php echo e($safeUsersCount); ?></h1>
                     <p>Registered Ageless One users</p>
 
-                    <a href="{{ route('admin.users') }}" class="btn-blue">
+                    <a href="<?php echo e(route('admin.users')); ?>" class="btn-blue">
                         View Users
                     </a>
                 </div>
 
                 <div class="kpi">
                     <small>Staff Attendance</small>
-                    <h1>{{ $safeUsersCount }}</h1>
+                    <h1><?php echo e($safeUsersCount); ?></h1>
                     <p>View punch-in and punch-out records</p>
 
-                    <a href="{{ route('admin.attendance') }}" class="btn-blue">
+                    <a href="<?php echo e(route('admin.attendance')); ?>" class="btn-blue">
                         View Attendance
                     </a>
                 </div>
@@ -535,7 +536,7 @@ header{
                     <h1>—</h1>
                     <p>Active project and site operations</p>
 
-                    <a href="{{ route('admin.work-sites') }}" class="btn-blue">
+                    <a href="<?php echo e(route('admin.work-sites')); ?>" class="btn-blue">
                         View Sites
                     </a>
                 </div>
@@ -545,7 +546,7 @@ header{
                     <h1>—</h1>
                     <p>Complaint and engineer workflow</p>
 
-                    <a href="{{ route('admin.tickets') }}" class="btn-blue">
+                    <a href="<?php echo e(route('admin.tickets')); ?>" class="btn-blue">
                         View Tickets
                     </a>
                 </div>
@@ -559,7 +560,7 @@ header{
 
             <div class="module-grid">
 
-                <a href="{{ route('admin.work-sites') }}" class="module-card">
+                <a href="<?php echo e(route('admin.work-sites')); ?>" class="module-card">
                     <div class="module-icon">🏗️</div>
 
                     <div>
@@ -568,8 +569,8 @@ header{
                     </div>
                 </a>
 
-                @if(Route::has('admin.site-zones.index'))
-                    <a href="{{ route('admin.site-zones.index') }}" class="module-card">
+                <?php if(Route::has('admin.site-zones.index')): ?>
+                    <a href="<?php echo e(route('admin.site-zones.index')); ?>" class="module-card">
                         <div class="module-icon">🗺️</div>
 
                         <div>
@@ -577,7 +578,7 @@ header{
                             <p>Manage civil, electrical, carpentry and project zones.</p>
                         </div>
                     </a>
-                @else
+                <?php else: ?>
                     <div class="module-card route-disabled">
                         <div class="module-icon">🗺️</div>
 
@@ -586,10 +587,10 @@ header{
                             <p>Route is not registered yet.</p>
                         </div>
                     </div>
-                @endif
+                <?php endif; ?>
 
-                @if(Route::has('admin.site-assets'))
-                    <a href="{{ route('admin.site-assets') }}" class="module-card">
+                <?php if(Route::has('admin.site-assets')): ?>
+                    <a href="<?php echo e(route('admin.site-assets')); ?>" class="module-card">
                         <div class="module-icon">🚜</div>
 
                         <div>
@@ -597,7 +598,7 @@ header{
                             <p>Track machines, vehicles, operators and services.</p>
                         </div>
                     </a>
-                @else
+                <?php else: ?>
                     <div class="module-card route-disabled">
                         <div class="module-icon">🚜</div>
 
@@ -606,14 +607,14 @@ header{
                             <p>Route is not registered yet.</p>
                         </div>
                     </div>
-                @endif
+                <?php endif; ?>
 
-                <a href="{{ route('workshops.index') }}" class="module-card">
+                <a href="<?php echo e(route('workshops.index')); ?>" class="module-card">
                     <div class="module-icon">🏭</div>
                     <div><h3>Workshop</h3><p>Manage workshop in-charge, inventory, workers, projects, photos and drawings.</p></div>
                 </a>
 
-                <a href="{{ route('admin.tickets') }}" class="module-card">
+                <a href="<?php echo e(route('admin.tickets')); ?>" class="module-card">
                     <div class="module-icon">🎫</div>
 
                     <div>
@@ -622,7 +623,7 @@ header{
                     </div>
                 </a>
 
-                <a href="{{ route('admin.attendance') }}" class="module-card">
+                <a href="<?php echo e(route('admin.attendance')); ?>" class="module-card">
                     <div class="module-icon">🕒</div>
 
                     <div>
@@ -631,7 +632,7 @@ header{
                     </div>
                 </a>
 
-                <a href="{{ route('office-inventory.index') }}" class="module-card">
+                <a href="<?php echo e(route('office-inventory.index')); ?>" class="module-card">
                     <div class="module-icon">📦</div>
 
                     <div>
@@ -640,7 +641,7 @@ header{
                     </div>
                 </a>
 
-                <a href="{{ route('admin.wages.index') }}" class="module-card">
+                <a href="<?php echo e(route('admin.wages.index')); ?>" class="module-card">
                     <div class="module-icon">💰</div>
 
                     <div>
@@ -651,4 +652,6 @@ header{
 
             </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\Agelessone\resources\views/admin/dashboard.blade.php ENDPATH**/ ?>

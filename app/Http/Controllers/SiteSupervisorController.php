@@ -47,6 +47,9 @@ class SiteSupervisorController extends Controller
             'mobile' => ['nullable','string','max:30'],
             'trade' => ['required','string','max:100'],
             'photo' => ['required','image','max:5120'],
+            'daily_wage' => ['nullable', 'numeric', 'min:0'],
+            'standard_hours' => ['nullable', 'numeric', 'min:0', 'max:24'],
+            'overtime_rate' => ['nullable', 'numeric', 'min:0'],
         ]);
         $data['photo'] = $request->file('photo')->store('workers/photos', 'public');
         $data['work_site_id'] = $site->id;
