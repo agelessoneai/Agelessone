@@ -16,6 +16,18 @@
         .nav-title{padding:18px 22px 7px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:1px}.side-nav{padding:0 10px}.side-nav a{display:flex;gap:10px;align-items:center;padding:10px 12px;margin:2px 0;border-radius:9px;color:#a8b4cc;text-decoration:none;font-size:13px}.side-nav a:hover{background:var(--panel2);color:#fff}.side-nav a.active{background:linear-gradient(90deg,var(--brand),#3360c8);color:#fff;font-weight:700}
         .main-area{min-width:0;display:flex;flex-direction:column;overflow:hidden}.topbar{height:72px;flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:0 26px;background:var(--panel);border-bottom:1px solid var(--line)}.topbar-title{font-weight:700}.topbar-user{margin-left:auto;display:flex;align-items:center;gap:11px}.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#5b8cff,#37c281);display:grid;place-items:center;font-weight:800}.muted{color:var(--muted)}.logout{background:transparent;border:1px solid #334155;padding:8px 14px;color:#fff;border-radius:9px}
         .page-content{flex:1;min-height:0;overflow:auto;padding:26px}.alert{border-radius:10px}.card,.card-dark{background:var(--panel);color:var(--text);border-color:var(--line)}
+        /* ── Global dark table fix (prevents Bootstrap white override on production) ── */
+        .table{--bs-table-bg:transparent;--bs-table-color:var(--text);--bs-table-striped-bg:rgba(255,255,255,.03);--bs-table-hover-bg:rgba(63,111,224,.07);color:var(--text)!important}
+        .table>:not(caption)>*>*{background-color:transparent!important;color:var(--text)!important;border-color:var(--line)!important}
+        .table thead th,.table th{color:var(--muted)!important;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;border-color:var(--line)!important}
+        .table tbody tr{border-color:var(--line)!important}
+        .table td,.table th{border-color:var(--line)!important;vertical-align:middle}
+        /* ── Global dark input/select/textarea fix ── */
+        .form-control,.form-select,.form-control-plaintext{background-color:var(--panel2)!important;color:var(--text)!important;border-color:var(--line)!important}
+        .form-control:focus,.form-select:focus{background-color:var(--panel2)!important;color:var(--text)!important;border-color:var(--brand)!important;box-shadow:0 0 0 .2rem rgba(63,111,224,.2)!important}
+        .form-control[readonly],.form-control:disabled{background-color:var(--bg)!important;color:var(--muted)!important}
+        input[type=date],input[type=time],input[type=number],input[type=text],input[type=email],input[type=search],select,textarea{background-color:var(--panel2)!important;color:var(--text)!important;border-color:var(--line)!important;color-scheme:dark}
+        input::placeholder,textarea::placeholder{color:var(--muted)!important}
         @media(max-width:900px){body{overflow:auto}.admin-shell{display:block;height:auto}.sidebar{position:relative;max-height:none}.brand{position:relative}.main-area{overflow:visible}.topbar{position:sticky;top:0;z-index:5}.page-content{overflow:visible}.side-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding-bottom:15px}.nav-title{padding-top:12px}}
     </style>
     <?php echo $__env->yieldPushContent('styles'); ?>

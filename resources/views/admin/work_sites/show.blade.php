@@ -4,7 +4,7 @@
 <style>
 .site-hero{background:linear-gradient(135deg,#1e3f93,#6046c9);color:#fff;border:1px solid #536cce;border-radius:20px;padding:24px;box-shadow:0 18px 45px rgba(0,0,0,.25)}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.cardx{background:linear-gradient(180deg,#17233a,#121b2e);color:#eef4ff;border:1px solid #2a3a58;border-radius:16px;padding:17px;box-shadow:0 14px 32px rgba(0,0,0,.18)}
+.cardx{background:linear-gradient(180deg,#17233a,#121b2e)!important;color:#eef4ff!important;border:1px solid #2a3a58;border-radius:16px;padding:17px;box-shadow:0 14px 32px rgba(0,0,0,.18)}
 .cardx h1,.cardx h2,.cardx h3,.cardx h4,.cardx h5,.cardx h6,.cardx strong,.cardx td{color:#eef4ff!important}.cardx small,.cardx .text-muted{color:#9cabc4!important}
 .person{display:block;text-decoration:none;color:inherit;transition:.18s ease}.person:hover{border-color:#6389e5;transform:translateY(-2px);color:inherit}
 .avatarx{width:45px;height:45px;border-radius:14px;background:#24355b;display:grid;place-items:center;font-weight:800;color:#9fbcff;border:1px solid #355183}
@@ -23,6 +23,18 @@ input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.
 .date-filter-bar .btn{border-radius:10px}
 .date-filter-bar .filter-info{color:#9cabc4;font-size:13px;margin-left:auto}
 .zone-row:hover{background:rgba(99,137,229,.1)!important}
+/* ── Force dark tables (fixes white flash on hosted/production Bootstrap) ── */
+.cardx table,
+.cardx .table{background:transparent!important;color:#eef4ff!important;--bs-table-bg:transparent;--bs-table-color:#eef4ff;--bs-table-striped-bg:rgba(255,255,255,.03);--bs-table-hover-bg:rgba(99,137,229,.08)}
+.cardx .table>:not(caption)>*>*{background-color:transparent!important;color:#eef4ff!important;border-color:#2a3a58!important}
+.cardx thead tr th{color:#9cabc4!important;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-color:#2a3a58!important;background:rgba(0,0,0,.2)!important}
+.cardx tbody tr{border-color:#2a3a58!important}
+.cardx tbody tr:hover>*{background-color:rgba(99,137,229,.08)!important}
+.cardx td,.cardx th{vertical-align:middle;border-color:#2a3a58!important}
+/* ── Dark input/select in modals ── */
+.form-control,.form-select{background-color:#0d1628!important;color:#eef4ff!important;border-color:#30466e!important}
+.form-control:focus,.form-select:focus{background-color:#0d1628!important;color:#eef4ff!important;border-color:#6389e5!important;box-shadow:0 0 0 .2rem rgba(99,137,229,.15)!important}
+.form-control[readonly]{background-color:#131e35!important;color:#9cabc4!important}
 @media(max-width:1100px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.grid{grid-template-columns:1fr}.site-hero{padding:18px}.site-hero{flex-direction:column}.site-hero .d-flex{width:100%}.site-hero .btn{flex:1}.date-filter-bar{flex-direction:column;align-items:stretch}.date-filter-bar .filter-info{margin-left:0}}
 </style>
