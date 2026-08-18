@@ -281,6 +281,8 @@ Route::middleware(['auth', 'role:admin,workshop_manager'])->prefix('workshops')-
     Route::put('/{workshop}/projects/{project}', [WorkshopController::class, 'updateProject'])->name('projects.update');
     Route::post('/{workshop}/projects/{project}/files', [WorkshopController::class, 'uploadProjectFile'])->name('projects.files.store');
     Route::delete('/{workshop}/projects/{project}/files/{file}', [WorkshopController::class, 'deleteProjectFile'])->name('projects.files.destroy');
+    Route::post('/{workshop}/tools', [WorkshopController::class, 'storeTool'])->name('tools.store');
+    Route::put('/{workshop}/tools/{tool}', [WorkshopController::class, 'updateTool'])->name('tools.update');
 });
 
 /*

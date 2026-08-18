@@ -5,6 +5,8 @@ use App\Models\User;
 use App\Models\Workshop;
 use App\Models\WorkshopInventoryItem;
 use App\Models\WorkshopProject;
+use App\Models\WorkshopTool;
+use App\Models\AdminNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -30,7 +32,7 @@ class WorkshopController extends Controller
     public function index()
     {
         $workshop = $this->primaryWorkshop();
-        $workshop->load(['inCharge','inventoryItems'=>fn($q)=>$q->orderBy('item_name'),'projects.inCharge']);
+        $workshop->load(['inCharge','inventoryItems'=>fn($q)=>$q->orderBy('item_name'),'projects.inCharge', 'tools']);
 
         return view('workshops.show',[
             'workshop'=>$workshop,
@@ -70,9 +72,16 @@ class WorkshopController extends Controller
         $data=$request->validate([
             'item_name'=>'required|string|max:255','item_code'=>'nullable|string|max:100','category'=>'nullable|string|max:100',
             'quantity'=>'required|numeric|min:0','unit'=>'required|string|max:40','minimum_stock'=>'nullable|numeric|min:0',
-            'location'=>'nullable|string|max:255','notes'=>'nullable|string'
+            'location'=>'nullable|string|max:255','notes'=>'nullable|string',
+            'photo'=>'nullable|image|max:5120',
+            'purchased_from'=>'nullable|string|max:255',
+            'vendor_contact'=>'nullable|string|max:255'
         ]);
-        $workshop->inventoryItems()->create($data);
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $request->file('photo')->store('workshop-inventory', 'public');
+        }
+        $item = $workshop->inventoryItems()->create($data);
+        $this->checkLowStock($item);
         return back()->with('success','Workshop inventory item added.');
     }
 
@@ -82,10 +91,32 @@ class WorkshopController extends Controller
         $data=$request->validate([
             'item_name'=>'required|string|max:255','item_code'=>'nullable|string|max:100','category'=>'nullable|string|max:100',
             'quantity'=>'required|numeric|min:0','unit'=>'required|string|max:40','minimum_stock'=>'nullable|numeric|min:0',
-            'location'=>'nullable|string|max:255','notes'=>'nullable|string'
+            'location'=>'nullable|string|max:255','notes'=>'nullable|string',
+            'photo'=>'nullable|image|max:5120',
+            'purchased_from'=>'nullable|string|max:255',
+            'vendor_contact'=>'nullable|string|max:255'
         ]);
+        if ($request->hasFile('photo')) {
+            if ($item->photo) {
+                Storage::disk('public')->delete($item->photo);
+            }
+            $data['photo'] = $request->file('photo')->store('workshop-inventory', 'public');
+        }
         $item->update($data);
+        $this->checkLowStock($item);
         return back()->with('success','Inventory item updated.');
+    }
+
+    private function checkLowStock($item) {
+        if ((float)$item->quantity < 2) {
+            AdminNotification::create([
+                'type' => 'low_stock',
+                'title' => 'Low Stock Alert',
+                'message' => "Workshop item {$item->item_name} has low stock ({$item->quantity} {$item->unit}).",
+                'user_id' => auth()->id(),
+                'data' => ['item_id' => $item->id],
+            ]);
+        }
     }
 
     public function storeProject(Request $request, Workshop $workshop)
@@ -116,6 +147,9 @@ class WorkshopController extends Controller
             'file_type'=>'required|in:photo,drawing',
             'file'=>'required|file|max:15360|mimes:jpg,jpeg,png,webp,pdf,dwg,dxf'
         ]);
+        if ($data['file_type'] === 'drawing' && auth()->user()->role !== 'admin') {
+            abort(403, 'Only admins can upload drawings.');
+        }
         $file=$request->file('file');
         $path=$file->store('workshop-projects/'.$project->id,'public');
         $project->files()->create([
@@ -128,6 +162,9 @@ class WorkshopController extends Controller
     {
         abort_unless($project->workshop_id===$workshop->id,404);
         $record=$project->files()->findOrFail($file);
+        if ($record->file_type === 'drawing' && auth()->user()->role !== 'admin') {
+            abort(403, 'Only admins can delete drawings.');
+        }
         Storage::disk('public')->delete($record->file_path);
         $record->delete();
         return back()->with('success','File removed.');
@@ -141,5 +178,39 @@ class WorkshopController extends Controller
             'expected_completion_date'=>'nullable|date','status'=>'required|in:planned,in_progress,on_hold,completed',
             'work_details'=>'nullable|string','pending_work'=>'nullable|string'
         ];
+    }
+
+    public function storeTool(Request $request, Workshop $workshop)
+    {
+        $data = $request->validate([
+            'tool_name' => 'required|string|max:255',
+            'condition' => 'nullable|string|max:100',
+            'quality' => 'nullable|string|max:100',
+            'last_used_by' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|max:5120',
+        ]);
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $request->file('photo')->store('workshop-tools', 'public');
+        }
+        $workshop->tools()->create($data);
+        return back()->with('success', 'Workshop tool added.');
+    }
+
+    public function updateTool(Request $request, Workshop $workshop, WorkshopTool $tool)
+    {
+        abort_unless($tool->workshop_id === $workshop->id, 404);
+        $data = $request->validate([
+            'tool_name' => 'required|string|max:255',
+            'condition' => 'nullable|string|max:100',
+            'quality' => 'nullable|string|max:100',
+            'last_used_by' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|max:5120',
+        ]);
+        if ($request->hasFile('photo')) {
+            if ($tool->photo) Storage::disk('public')->delete($tool->photo);
+            $data['photo'] = $request->file('photo')->store('workshop-tools', 'public');
+        }
+        $tool->update($data);
+        return back()->with('success', 'Workshop tool updated.');
     }
 }

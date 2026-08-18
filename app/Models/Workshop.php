@@ -8,4 +8,5 @@ class Workshop extends Model {
     public function inCharge(): BelongsTo { return $this->belongsTo(User::class,'in_charge_user_id'); }
     public function inventoryItems(): HasMany { return $this->hasMany(WorkshopInventoryItem::class); }
     public function projects(): HasMany { return $this->hasMany(WorkshopProject::class); }
+    public function tools(): HasMany { return $this->hasMany(WorkshopTool::class); }
 }
